@@ -11,8 +11,8 @@ import {
 import { globalHotKeys } from "@/atoms/hotkeys";
 import { isShowPreviewChangeModalAtom } from "@/atoms/ui";
 import PathInput from "@/components/PathInput";
-import { Button, IconButton } from "@zendeskgarden/react-buttons";
-import { Tooltip } from "@zendeskgarden/react-tooltips";
+import { Button as ShadcnButton } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import React, { useEffect, useState } from "react";
 import { useRecoilCallback, useSetRecoilState } from "recoil";
 import ShortcutKey from "../ShortcutKey";
@@ -54,86 +54,76 @@ const NavBar = () => {
   return (
     <div className="flex flex-row space-x-2">
       <div className="flex flex-row space-x-2">
-        <Tooltip
-          placement="bottom"
-          delayMS={100}
-          hasArrow={false}
-          size="medium"
-          type="light"
-          className="z-50 max-w-2xl p-2"
-          content={
+        <Tooltip delayDuration={100}>
+          <TooltipTrigger asChild>
+            <ShadcnButton
+              size="sm"
+              variant="outline"
+              onClick={() => setShowChangeModal(true)}
+              disabled={!isCommittable}
+              className="dark:text-white"
+            >
+              Preview changes
+            </ShadcnButton>
+          </TooltipTrigger>
+          <TooltipContent side="bottom" className="z-50 max-w-2xl p-2">
             <ShortcutKey
               size="small"
               hotkey={globalHotKeys.PREVIEW_CHANGES.sequences}
             />
-          }
-        >
-          <Button
-            size="small"
-            onClick={() => setShowChangeModal(true)}
-            disabled={!isCommittable}
-            className="dark:text-white"
-          >
-            Preview changes
-          </Button>
+          </TooltipContent>
         </Tooltip>
-        <Tooltip
-          placement="bottom"
-          delayMS={100}
-          hasArrow={false}
-          size="medium"
-          type="light"
-          className="max-w-2xl p-2"
-          content={
+        <Tooltip delayDuration={100}>
+          <TooltipTrigger asChild>
+            <ShadcnButton
+              size="sm"
+              disabled={!isCommittable}
+              onClick={actionCommitChange}
+              className="dark:text-white"
+            >
+              Commit
+            </ShadcnButton>
+          </TooltipTrigger>
+          <TooltipContent side="bottom" className="max-w-2xl p-2">
             <ShortcutKey
               size="small"
               hotkey={globalHotKeys.COMMIT_CHANGES.sequences}
             />
-          }
-        >
-          <Button
-            isPrimary
-            size="small"
-            disabled={!isCommittable}
-            onClick={actionCommitChange}
-            className="dark:text-white"
-          >
-            Commit
-          </Button>
+          </TooltipContent>
         </Tooltip>
-        <Tooltip
-          placement="bottom"
-          delayMS={100}
-          hasArrow={false}
-          size="medium"
-          type="light"
-          className="z-50 max-w-2xl p-2"
-          content={
+        <Tooltip delayDuration={100}>
+          <TooltipTrigger asChild>
+            <ShadcnButton
+              variant="ghost"
+              size="icon"
+              className="rounded-full"
+              onClick={actionReverseChange}
+            >
+              <div className="w-5 dark:text-gray-200">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  className="dark:text-white"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
+                </svg>
+              </div>
+            </ShadcnButton>
+          </TooltipTrigger>
+          <TooltipContent side="bottom" className="z-50 max-w-2xl p-2">
             <ShortcutKey
               size="small"
               title="Refresh - Revert uncommitted changes"
               hotkey={globalHotKeys.REVERT_CHANGES.sequences}
             />
-          }
-        >
-          <IconButton isPill size="small" onClick={actionReverseChange}>
-            <div className="w-5 dark:text-gray-200">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                className="dark:text-white"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                />
-              </svg>
-            </div>
-          </IconButton>
+          </TooltipContent>
         </Tooltip>
       </div>
       <div className="w-px h-full" />

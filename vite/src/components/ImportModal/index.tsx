@@ -15,7 +15,6 @@ import {
   isCollection,
   readerFilePromise,
 } from "@/utils/common";
-import { Button } from "@zendeskgarden/react-buttons";
 import {
   Checkbox,
   Field,
@@ -24,13 +23,15 @@ import {
   Label,
   Message,
 } from "@zendeskgarden/react-forms";
+import { Button as ShadcnButton } from "@/components/ui/button";
+import { Input as ShadcnInput } from "@/components/ui/input";
 import {
-  Body,
-  Footer,
-  FooterItem,
-  Header,
-  Modal,
-} from "@zendeskgarden/react-modals";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import csvtojson from "csvtojson";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
@@ -42,6 +43,7 @@ const ImportModal = () => {
   const collectionPath = useRecoilValue(importCollectionPathAtom);
   const [file, setFile] = useRecoilState(importFileAtom);
   const [docs, setDocs] = useState<any[]>([]);
+  const [isOpen, setIsOpen] = useRecoilState(isImportModalAtom);
   const { register, handleSubmit, formState, watch, errors, control } = useForm(
     {
       mode: "onChange",
@@ -69,7 +71,6 @@ const ImportModal = () => {
     multiple: false,
   });
 
-  const setShowImportModal = useSetRecoilState(isImportModalAtom);
 
   const onSubmit = (value: any) => {
     // TODO: If there is really large list, we should show loading somewhere
@@ -79,7 +80,7 @@ const ImportModal = () => {
     })
       .then(() => {
         setFile(undefined);
-        setShowImportModal(false);
+        setIsOpen(false);
         actionAddPathExpander([value.path]); // Assume that imported success we will also have new path
         if (value.path === collectionPath) {
           // Auto query again if current view same as imported path
@@ -117,7 +118,7 @@ const ImportModal = () => {
   }, [file]);
 
   const handleOnCancel = () => {
-    setShowImportModal(false);
+    setIsOpen(false);
     setFile(undefined);
   };
 
@@ -174,17 +175,12 @@ const ImportModal = () => {
   // TODO: Add analysis like: Preview import file, how many docs will be imported, warning if it not match current collection schema
 
   return (
-    <Modal
-      isAnimated={false}
-      isLarge
-      focusOnMount
-      // backdropProps={{ onClick: ignoreBackdropEvent }}
-      appendToNode={document.querySelector("#root") || undefined}
-      className="w-3/5"
-    >
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Header>Import data</Header>
-        <Body className="p-4">
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogContent className="sm:max-w-[60%] max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Import data</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit(onSubmit)} className="p-4">
           <div className="space-y-4 h-96">
             <Field>
               <Label>Path</Label>
@@ -263,27 +259,22 @@ const ImportModal = () => {
               </Field>
             )}
           </div>
-        </Body>
-        <Footer className="p-4">
-          <FooterItem>
-            <Button size="small" onClick={() => handleOnCancel()}>
-              Cancel
-            </Button>
-          </FooterItem>
-          <FooterItem>
-            <Button
-              size="small"
-              disabled={!formState.isValid || docs.length <= 0}
-              onClick={handleSubmit(onSubmit)}
-              isPrimary
-              type="submit"
-            >
-              Import {docs.length > 0 && `${docs.length} doc(s)`}
-            </Button>
-          </FooterItem>
-        </Footer>
-      </form>
-    </Modal>
+        </form>
+        <DialogFooter className="p-4">
+          <ShadcnButton variant="outline" size="sm" onClick={() => handleOnCancel()}>
+            Cancel
+          </ShadcnButton>
+          <ShadcnButton
+            size="sm"
+            disabled={!formState.isValid || docs.length <= 0}
+            onClick={handleSubmit(onSubmit)}
+            type="submit"
+          >
+            Import {docs.length > 0 && `${docs.length} doc(s)`}
+          </ShadcnButton>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 

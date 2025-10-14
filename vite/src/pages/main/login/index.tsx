@@ -19,6 +19,8 @@ import {
   useRecoilValueLoadable,
   useSetRecoilState,
 } from "recoil";
+import { Button as ShadcnButton } from "@/components/ui/button";
+import { Input as ShadcnInput } from "@/components/ui/input";
 
 const LoginPage: React.FC = () => {
   const userCertsLoadable = useRecoilValueLoadable(certs);
@@ -109,22 +111,22 @@ const LoginPage: React.FC = () => {
         <div
           key={cert.projectId}
           onDoubleClick={() => handleOpenConnection(cert.projectId)}
-          className="flex flex-row items-center justify-between p-3 border border-gray-300 cursor-pointer dark:border-gray-600 dark:hover:bg-gray-700 hover:bg-gray-200"
+          className="flex flex-row items-center justify-between p-4 cursor-pointer bg-gray-200 dark:bg-gray-900 dark:hover:bg-gray-700 hover:bg-gray-200 rounded-xl"
         >
           <Title>{cert.projectId}</Title>
           {/* TODO: Last access time */}
           <div className="flex flex-row items-center space-x-2">
             <button
               role="button"
-              className="w-6 h-6 p-1"
+              className="w-8 h-8 p-1"
               onClick={() => setConfirm(cert.projectId)}
             >
               <svg
-                width="16"
-                height="16"
+                width="20"
+                height="20"
                 viewBox="0 0 16 16"
                 xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
+                fill="red"
               >
                 <path
                   fillRule="evenodd"
@@ -133,13 +135,13 @@ const LoginPage: React.FC = () => {
                 />
               </svg>
             </button>
-            <Button
-              isPrimary
+            <ShadcnButton
               onClick={() => handleOpenConnection(cert.projectId)}
-              size="small"
+              size="sm"
+              className="rounded-full"
             >
               Connect
-            </Button>
+            </ShadcnButton>
           </div>
         </div>
       ));
@@ -173,23 +175,27 @@ const LoginPage: React.FC = () => {
           <div className="p-3 space-y-3">
             <Title>Connect to emulator</Title>
             <div className="flex flex-row items-center justify-between space-x-2 cursor-pointer">
-              <Input
+              <ShadcnInput
                 value={projectValue}
                 onChange={(e) => setProjectValue(e.target.value)}
-                isCompact
+                className="h-8"
                 placeholder="example-project"
               />
-              <Input
+              <ShadcnInput
                 value={connection}
                 onChange={(e) => setConnection(e.target.value)}
-                isCompact
+                className="h-8"
                 placeholder="127.0.0.1:8080"
               />
               {/* TODO: Last access time */}
               <div className="flex flex-row items-center space-x-2">
-                <Button isPrimary onClick={handleConnectLocal} size="small">
+                <ShadcnButton
+                  onClick={handleConnectLocal}
+                  size="sm"
+                  className="rounded-full"
+                >
                   Connect
-                </Button>
+                </ShadcnButton>
               </div>
             </div>
             <hr />
@@ -200,12 +206,12 @@ const LoginPage: React.FC = () => {
               ) : (
                 <span>Choose a credential file or drag and drop here</span>
               )}
-              <Input {...getInputProps()} />
+              <ShadcnInput {...getInputProps()} />
             </FileUpload>
             <div>
-              <Anchor
-                href="https://www.notion.so/cuthanh/How-to-get-my-credential-file-781fb9bfa0cf479a81b72a272728808c"
-                className="pt-2 text-sm"
+              <ShadcnButton
+                variant="link"
+                className="pt-2 text-sm p-0 h-auto"
                 onClick={() =>
                   window.api.openUrl(
                     "https://www.notion.so/cuthanh/How-to-get-my-credential-file-781fb9bfa0cf479a81b72a272728808c"
@@ -213,7 +219,7 @@ const LoginPage: React.FC = () => {
                 }
               >
                 I don&apos;t know how to get credential file
-              </Anchor>
+              </ShadcnButton>
             </div>
           </div>
         </Body>
@@ -231,19 +237,18 @@ const LoginPage: React.FC = () => {
           </Body>
           <Footer className="p-4">
             <FooterItem>
-              <Button onClick={() => setConfirm("")} size="small">
+              <ShadcnButton onClick={() => setConfirm("")} size="sm" variant="outline">
                 Cancel
-              </Button>
+              </ShadcnButton>
             </FooterItem>
             <FooterItem>
-              <Button
-                isPrimary
-                isDanger
-                size="small"
+              <ShadcnButton
+                variant="destructive"
+                size="sm"
                 onClick={() => handleDeleteCert(showConfirm)}
               >
                 Remove
-              </Button>
+              </ShadcnButton>
             </FooterItem>
           </Footer>
         </Modal>

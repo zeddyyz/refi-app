@@ -44,7 +44,7 @@ const QuoteLoading = ({ onDone }: IQuoteLoadingProps) => {
   }, [quote]);
 
   return (
-    <div className="flex flex-col items-center justify-center w-screen h-screen text-center quote">
+    <div className="flex flex-col items-center justify-center w-screen h-screen text-center quote bg-grey-100 dark:bg-black">
       <div className="animate-spin">
         <svg
           width="36"

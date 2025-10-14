@@ -8,9 +8,9 @@ import {
 } from "@/atoms/RecoilExternalStatePortal";
 import { defaultEditorAtom } from "@/atoms/ui";
 import { getPathEntities, isCollection } from "@/utils/common";
-import { Button } from "@zendeskgarden/react-buttons";
-import { Input, InputGroup } from "@zendeskgarden/react-forms";
-import { Tooltip } from "@zendeskgarden/react-tooltips";
+import { Button as ShadcnButton } from "@/components/ui/button";
+import { Input as ShadcnInput } from "@/components/ui/input";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import classNames from "classnames";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -58,14 +58,13 @@ const Property = () => {
           <h2 className="mt-4">
             Click document on the table to start editing or
           </h2>
-          <Button
-            size="small"
+          <ShadcnButton
+            size="sm"
             className="mt-3"
             onClick={handleCreateDocument}
-            isPrimary
           >
             New Document
-          </Button>
+          </ShadcnButton>
         </div>
       );
     }
@@ -76,14 +75,13 @@ const Property = () => {
           <img src={EmptyBox} />
         </div>
         <h2 className="mt-4">Opps...The document is not exist</h2>
-        <Button
-          size="small"
+        <ShadcnButton
+          size="sm"
           className="mt-3"
           onClick={handleCreateDocument}
-          isPrimary
         >
           Create
-        </Button>
+        </ShadcnButton>
       </div>
     );
   }
@@ -117,10 +115,10 @@ const Property = () => {
   return (
     <div className="flex flex-col h-full">
       <div className="relative group">
-        <InputGroup isCompact>
+        <div className="flex">
           <div
             className={classNames(
-              "w-8 p-1 text-center text-gray-700 border font-bold dark:text-gray-200",
+              "w-8 p-1 text-center text-gray-700 border font-bold dark:text-gray-200 flex items-center justify-center bg-muted border-r-0 rounded-l-md",
               {
                 ["border-gray-200 dark:border-gray-700"]: !doc.isNew,
                 ["border-gray-300 dark:border-gray-500"]: doc.isNew,
@@ -129,17 +127,16 @@ const Property = () => {
           >
             _id
           </div>
-          <Input
+          <ShadcnInput
             ref={idInputRef}
-            isCompact
-            className="pr-6 font-mono disabled:text-gray-700 disabled:border-gray-200 dark:border-gray-700 dark:text-white"
+            className="pr-6 font-mono disabled:text-gray-700 disabled:border-gray-200 dark:border-gray-700 dark:text-white h-8 rounded-l-none"
             placeholder="Document id"
             defaultValue={doc.id}
             disabled={!doc.isNew}
             onBlur={(e) => handleOnChangeId(e.target.value)}
             onKeyDown={onIdKeyDown}
           />
-        </InputGroup>
+        </div>
         {!doc.isNew && (
           <CopyIcon
             value={doc.id}
@@ -149,44 +146,37 @@ const Property = () => {
       </div>
       <div className="flex flex-row items-center justify-between mt-3">
         {editorType === "basic" ? (
-          <Input
+          <ShadcnInput
             placeholder="Search for property or value..."
-            isCompact
+            className="h-8"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
           />
         ) : (
-          <Tooltip
-            placement="top-start"
-            delayMS={100}
-            hasArrow={false}
-            size="medium"
-            type="light"
-            className="max-w-2xl"
-            appendToNode={document.body}
-            zIndex={40}
-            content={
+          <Tooltip delayDuration={100}>
+            <TooltipTrigger asChild>
+              <a className="text-xs text-blue-500 cursor-pointer">
+                <svg
+                  className="inline-block w-4 mb-0.5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                    clipRule="evenodd"
+                  />
+                </svg>{" "}
+                How to insert Timestamp, Geopoint or Reference?
+              </a>
+            </TooltipTrigger>
+            <TooltipContent side="top" align="start" className="max-w-2xl z-40">
               <span className="dark:text-gray-200">
                 Type <code className="text-red-700 bg-gray-100 p-0.5">/</code>{" "}
                 to start insert new type
               </span>
-            }
-          >
-            <a className="text-xs text-blue-500 cursor-pointer">
-              <svg
-                className="inline-block w-4 mb-0.5"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
-                  clipRule="evenodd"
-                />
-              </svg>{" "}
-              How to insert Timestamp, Geopoint or Reference?
-            </a>
+            </TooltipContent>
           </Tooltip>
         )}
         <div className="flex flex-row justify-self-end">

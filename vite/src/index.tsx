@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./styles/tailwind.css";
+import "./styles/globals.css";
 import App from "./App";
 import { RecoilRoot } from "recoil";
 import * as serviceWorker from "./serviceWorker";
