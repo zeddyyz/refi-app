@@ -88,9 +88,9 @@ const createMainWindow = async () => {
   }
   const window = new BrowserWindow({
     show: false,
-    width: 1000,
-    height: 1000,
-    backgroundColor: isMacOS ? "#D1D5DB" : "#6B7280",
+    width: 1360,
+    height: 900,
+    backgroundColor: isMacOS ? "black" : "#6B7280",
     icon: path.join(__dirname, '../assets/icon.icns'),
     titleBarStyle: isMacOS ? 'hiddenInset' : 'default',
     frame: isMacOS,
@@ -128,7 +128,6 @@ const createMainWindow = async () => {
     window.loadURL("app://-/tabs.html");
   }
 
-  window.maximize();
   window.show();
 
   const windowView = await createWindow();
