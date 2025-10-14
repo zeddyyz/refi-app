@@ -46,4 +46,10 @@ window.api = {
   }
 }
 
+// Listen for theme toggle from main process
+ipcRenderer.on('toggle-theme', () => {
+  // Dispatch a custom event that the React app can listen to
+  window.dispatchEvent(new CustomEvent('toggle-theme'));
+});
+
 console.log('Done preload client');

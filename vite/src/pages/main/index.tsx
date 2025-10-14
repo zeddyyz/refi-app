@@ -4,7 +4,6 @@ import { setRecoilExternalState } from "@/atoms/RecoilExternalStatePortal";
 import { notifyErrorPromise } from "@/atoms/ui.action";
 import DataSubscriber from "@/components/DataSubscriber";
 import NavBar from "@/components/NavBar";
-import ProductBar from "@/components/ProductBar";
 import Property from "@/components/Property";
 import QuoteLoading from "@/components/QuoteLoading";
 import TreeView from "@/components/TreeView";
@@ -118,9 +117,6 @@ function MainLayout({ size }: IMainLayoutProps): ReactElement {
               </div>
             </ReactGridLayout>
             <Background />
-          </div>
-          <div className="flex flex-row justify-end pr-3 mt-3 text-white transform translate-y-1 bg-gray-400 dark:bg-gray-900">
-            <ProductBar />
           </div>
         </>
       )}

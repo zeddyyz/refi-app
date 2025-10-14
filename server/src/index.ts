@@ -487,6 +487,17 @@ const template = [
       },
       { role: 'toggleDevTools' },
       { type: 'separator' },
+      {
+        label: 'Toggle Theme',
+        accelerator: isMacOS ? 'Cmd+Shift+T' : 'Ctrl+Shift+T',
+        click: () => {
+          const instance = getActiveInstance();
+          if (instance) {
+            instance.window.webContents.send('toggle-theme');
+          }
+        }
+      },
+      { type: 'separator' },
       { role: 'resetZoom' },
       { role: 'zoomIn' },
       { role: 'zoomOut' },
@@ -526,3 +537,4 @@ const template = [
 
 const menu = Menu.buildFromTemplate(template as any)
 Menu.setApplicationMenu(menu)
+console.log('Menu set with template:', template.find(item => item.label === 'View'))
