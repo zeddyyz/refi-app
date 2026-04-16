@@ -11,6 +11,11 @@ import { useRecoilState } from "recoil";
 export const lightTheme = {
   name: "light",
   ...DEFAULT_THEME,
+  colors: {
+    ...DEFAULT_THEME.colors,
+    background: "#f2f2f7",
+    foreground: "#111827",
+  },
   space: {
     ...DEFAULT_THEME.space,
     base: 4,
@@ -60,13 +65,13 @@ export const darkTheme = {
   name: "dark",
   colors: {
     ...lightTheme.colors,
-    background: "#1F2937",
+    background: "#000000",
     foreground: "white",
     primaryHue: "#3B82F6",
     // dangerHue: "red",
     // warningHue: "yellow",
     // successHue: "green",
-    neutralHue: "#374151",
+    neutralHue: "#1c1c1e",
     // chromeHue: "kale",
   },
 };
@@ -81,6 +86,7 @@ export const setTheme = (theme: boolean) => {
   }
 };
 
+// eslint-disable-next-line react/prop-types
 const AppTheme: React.FC = ({ children }) => {
   const [appTheme, setAppTheme] = useRecoilState(appThemeAtom);
 
