@@ -299,6 +299,18 @@ function TableWrapper({
               onScrollStop={handleScrollStop}
               hideTracksWhenNotNeeded
               ref={scrollerRef}
+              renderThumbVertical={(props) => (
+                <div
+                  {...props}
+                  className="!bg-border hover:!bg-muted-foreground/60 rounded-full"
+                />
+              )}
+              renderThumbHorizontal={(props) => (
+                <div
+                  {...props}
+                  className="!bg-border hover:!bg-muted-foreground/60 rounded-full"
+                />
+              )}
             >
               <FixedSizeList
                 height={height - 34}

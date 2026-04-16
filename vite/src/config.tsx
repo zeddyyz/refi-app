@@ -145,7 +145,12 @@ loader.init().then((monaco) => {
   monaco.editor.defineTheme("monacoProperty-light", {
     base: "vs",
     inherit: true,
-    colors: {},
+    colors: {
+      "scrollbar.shadow": "#00000000",
+      "scrollbarSlider.background": "#00000022",
+      "scrollbarSlider.hoverBackground": "#00000044",
+      "scrollbarSlider.activeBackground": "#00000066",
+    },
     rules: [
       { token: "__GeoPoint__", foreground: "0000ff", fontStyle: "bold" },
       {
@@ -160,7 +165,12 @@ loader.init().then((monaco) => {
   monaco.editor.defineTheme("monacoProperty-dark", {
     base: "vs-dark",
     inherit: true,
-    colors: {},
+    colors: {
+      "scrollbar.shadow": "#00000000",
+      "scrollbarSlider.background": "#ffffff1a",
+      "scrollbarSlider.hoverBackground": "#ffffff33",
+      "scrollbarSlider.activeBackground": "#ffffff55",
+    },
     rules: [
       { token: "__GeoPoint__", foreground: "0000ff", fontStyle: "bold" },
       {
