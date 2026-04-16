@@ -13,7 +13,7 @@ export const lightTheme = {
   ...DEFAULT_THEME,
   colors: {
     ...DEFAULT_THEME.colors,
-    background: "#f2f2f7",
+    background: "#ffffff",
     foreground: "#111827",
   },
   space: {
@@ -65,7 +65,7 @@ export const darkTheme = {
   name: "dark",
   colors: {
     ...lightTheme.colors,
-    background: "#000000",
+    background: "#1c1c1e",
     foreground: "white",
     primaryHue: "#3B82F6",
     // dangerHue: "red",

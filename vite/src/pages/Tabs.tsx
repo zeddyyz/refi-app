@@ -73,10 +73,7 @@ const TabsPage = () => {
       >
         <Tabs selectedItem={selectedTab} onChange={handleSelectTab}>
           <TabList
-            className={classNames("box-content m-0 border-b-0", {
-              ["bg-gray-500"]: !isMacOS,
-              ["bg-gray-300"]: isMacOS,
-            })}
+            className="box-content m-0 border-b-0 bg-background"
           >
             {tabList.map((tab) => (
               <Tab
@@ -85,9 +82,8 @@ const TabsPage = () => {
                 className={classNames(
                   "py-2 px-8 border-0 text-left group relative",
                   {
-                    ["bg-white"]: tab === selectedTab,
-                    ["text-white"]: !isMacOS && tab !== selectedTab,
-                    ["text-gray-600"]: isMacOS && tab !== selectedTab,
+                    ["bg-card text-foreground"]: tab === selectedTab,
+                    ["text-muted-foreground"]: tab !== selectedTab,
                   }
                 )}
               >
@@ -111,10 +107,7 @@ const TabsPage = () => {
             ))}
             <Tab
               item="add"
-              className={classNames("px-3 py-2 border-0", {
-                ["text-white"]: !isMacOS,
-                ["text-gray-600"]: isMacOS,
-              })}
+              className="px-3 py-2 border-0 text-muted-foreground"
             >
               <svg
                 width="18"
@@ -132,7 +125,7 @@ const TabsPage = () => {
         {!isMacOS && (
           <div className="flex flex-row items-stretch justify-center">
             <div
-              className="p-3 hover:bg-gray-600"
+              className="p-3 hover:bg-accent"
               onClick={handleMinimumWindow}
             >
               <img
@@ -143,7 +136,7 @@ const TabsPage = () => {
             </div>
 
             <div
-              className="p-3 hover:bg-gray-600"
+              className="p-3 hover:bg-accent"
               onClick={handleToggleMaximumWindow}
             >
               <img
@@ -163,7 +156,7 @@ const TabsPage = () => {
           </div>
         )}
       </div>
-      <div className="w-full h-full bg-white"></div>
+      <div className="w-full h-full bg-background"></div>
     </div>
   );
 };

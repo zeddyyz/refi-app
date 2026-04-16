@@ -126,7 +126,7 @@ function MainLayout({ size }: IMainLayoutProps): ReactElement {
 
 const MainWithSize = () => {
   return (
-    <div className="w-screen h-screen bg-white dark:bg-gray-800 dark:text-gray-200">
+    <div className="w-screen h-screen bg-background text-foreground">
       <AutoSizer>
         {({ height, width }) => <MainLayout size={{ width, height }} />}
       </AutoSizer>
