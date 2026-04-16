@@ -103,7 +103,7 @@ export const EditablePropertyField = ({
     <div
       ref={wrapperEl}
       className={classNames("relative w-full outline-none", {
-        [`border-gray-400 border-l-${Math.min(depth * 2, 8)}`]: depth > 0,
+        [`border-border border-l-${Math.min(depth * 2, 8)}`]: depth > 0,
       })}
       cm-template="propertyName"
       cm-id={fieldPath}
@@ -141,10 +141,9 @@ export const EditablePropertyField = ({
       <DataInput
         ref={inputEl}
         className={classNames(
-          "font-semibold dark:text-gray-200 dark:text-gray-200 focus:ring-1 focus:ring-blue-400",
+          "font-semibold text-foreground focus:ring-1 focus:ring-ring",
           {
-            ["bg-red-300"]: isFieldChanged,
-            // ["bg-yellow-200 transition-colors duration-300"]: isHighlight,
+            ["bg-status-changed"]: isFieldChanged,
           }
         )}
         tabIndex={tabIndex}

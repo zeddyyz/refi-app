@@ -8,7 +8,7 @@ import {
   actionRemoveProperty,
 } from "@/atoms/navigator.action";
 import { reorder } from "@/utils/common";
-import { Button } from "@zendeskgarden/react-buttons";
+import { Button } from "@/components/ui/button";
 import classNames from "classnames";
 import React, { ReactElement, useEffect } from "react";
 import {
@@ -45,15 +45,15 @@ const PropertyItem = ({
       {...provided.draggableProps}
       {...provided.dragHandleProps}
       className={classNames(
-        "flex flex-row items-center justify-between h-8 hover:bg-gray-200 p-1.5 pl-0 group",
+        "flex flex-row items-center justify-between h-8 hover:bg-accent p-1.5 pl-0 group",
         {
-          ["bg-gray-200"]: snapshot.isDragging,
+          ["bg-accent"]: snapshot.isDragging,
         }
       )}
     >
       <div>
         <svg
-          className="inline-block w-4 text-gray-500"
+          className="inline-block w-4 text-muted-foreground"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -166,7 +166,7 @@ const PropertyList = () => {
             )}
           />
         </div>
-        <Button onClick={handleResetFieldList} size="small">
+        <Button onClick={handleResetFieldList} variant="outline" size="sm" className="h-7 px-3">
           Reset
         </Button>
       </form>

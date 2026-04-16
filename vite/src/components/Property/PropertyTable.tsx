@@ -11,6 +11,7 @@ import { buildFSUrl, fieldAtom } from "@/atoms/firestore";
 import { uniqueId } from "lodash";
 import { FIELD_KEY_PREFIX } from "@/utils/contant";
 import { newFieldAtom } from "@/atoms/ui";
+import { Button } from "@/components/ui/button";
 
 interface IPropertyTableProps {
   doc: ClientDocumentSnapshot;
@@ -131,14 +132,14 @@ const PropertyTable = ({ searchInput, doc }: IPropertyTableProps) => {
               ? row.depth + 1
               : (row.depth as number);
             return (
-              <tr key={row.original.field}>
+              <tr key={row.original.field} className="hover:bg-accent/40">
                 {row.cells.map((cell) => {
                   return (
                     <td
                       key={row.original.field + "." + cell.column.id}
                       role="cell"
                       className={classNames(
-                        "border border-gray-300 align-top",
+                        "border border-border align-top",
                         {
                           ["w-32"]: cell.column.id === "field",
                         }
@@ -153,12 +154,13 @@ const PropertyTable = ({ searchInput, doc }: IPropertyTableProps) => {
           })}
         </tbody>
       </table>
-      <button
-        role="button"
-        className="flex flex-row items-center justify-center p-1 mt-1 text-xs bg-white border border-gray-300"
+      <Button
+        variant="outline"
+        size="sm"
         onClick={handleAddProperty}
+        className="w-full justify-start gap-2 font-normal"
       >
-        <div className="inline-block w-4 mr-1 text-green-500">
+        <span className="inline-block w-4 text-muted-foreground">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -172,9 +174,9 @@ const PropertyTable = ({ searchInput, doc }: IPropertyTableProps) => {
               d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-        </div>
+        </span>
         Add property
-      </button>
+      </Button>
     </div>
   );
 };

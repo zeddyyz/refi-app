@@ -9,7 +9,11 @@ import { useContextMenu } from "@/hooks/contextMenu";
 import { isNumeric } from "@/utils/common";
 import { convertFSValue } from "@/utils/fieldConverter";
 import { getFireStoreType } from "@/utils/simplifr";
-import { Tooltip } from "@zendeskgarden/react-tooltips";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import classNames from "classnames";
 import { DocRef } from "firestore-serializers";
 import { isEqual, isUndefined } from "lodash";
@@ -171,35 +175,30 @@ export const EditablePropertyValue = ({
     case "reference":
       const refValue = instanceValue as DocRef;
       defaultEditor = (
-        <Tooltip
-          placement="top-start"
-          delayMS={100}
-          hasArrow={false}
-          size="medium"
-          type="light"
-          className="max-w-2xl"
-          content={
-            <span className="dark:text-gray-200">
+        <Tooltip delayDuration={100}>
+          <TooltipTrigger asChild>
+            <DataInput
+              ref={inputEl}
+              className="text-primary underline focus:ring-1 focus:ring-ring"
+              onClick={(e) => handleClickFollowLink(e, refValue.path)}
+              tabIndex={tabIndex}
+              value={refValue.path}
+              onChange={(e) => onChange(new DocRef(e.target.value))}
+              onBlur={onBlur}
+              onKeyDown={onKeyDown}
+            />
+          </TooltipTrigger>
+          <TooltipContent side="top" align="start" className="max-w-2xl">
+            <span className="text-foreground">
               <a
-                className="text-blue-400"
+                className="text-primary"
                 onClick={() => handleClickFollowLink(null, refValue.path)}
               >
                 Follow reference
               </a>{" "}
               (cmd + click)
             </span>
-          }
-        >
-          <DataInput
-            ref={inputEl}
-            className="text-blue-400 underline focus:ring-1 focus:ring-blue-400"
-            onClick={(e) => handleClickFollowLink(e, refValue.path)}
-            tabIndex={tabIndex}
-            value={refValue.path}
-            onChange={(e) => onChange(new DocRef(e.target.value))}
-            onBlur={onBlur}
-            onKeyDown={onKeyDown}
-          />
+          </TooltipContent>
         </Tooltip>
       );
       break;
@@ -213,22 +212,34 @@ export const EditablePropertyValue = ({
       );
       break;
     default:
-      defaultEditor = (
-        <Tooltip
-          placement="top-start"
-          delayMS={100}
-          hasArrow={false}
-          size="medium"
-          type="light"
-          className={classNames("max-w-2xl", {
-            ["hidden"]: !/^(https?:\/\/[^\s]+)$/.test(
-              instanceValue?.toString() || ""
-            ),
+      const isUrl = /^(https?:\/\/[^\s]+)$/.test(
+        instanceValue?.toString() || ""
+      );
+      const urlInput = (
+        <DataInput
+          ref={inputEl}
+          className={classNames("focus:ring-1 focus:ring-ring", {
+            ["underline text-primary"]: isUrl,
           })}
-          content={
+          minRows={2}
+          maxRows={12}
+          onClick={(e) =>
+            handleClickFollowLink(e, instanceValue?.toString() || "", false)
+          }
+          tabIndex={tabIndex}
+          value={instanceValue}
+          onChange={(e) => onChange(e.target.value)}
+          onBlur={onBlur}
+          onKeyDown={onKeyDown}
+        />
+      );
+      defaultEditor = isUrl ? (
+        <Tooltip delayDuration={100}>
+          <TooltipTrigger asChild>{urlInput}</TooltipTrigger>
+          <TooltipContent side="top" align="start" className="max-w-2xl">
             <span>
               <a
-                className="text-blue-400"
+                className="text-primary"
                 onClick={() =>
                   handleClickFollowLink(
                     null,
@@ -241,27 +252,10 @@ export const EditablePropertyValue = ({
               </a>{" "}
               (cmd + click)
             </span>
-          }
-        >
-          <DataInput
-            ref={inputEl}
-            className={classNames("focus:ring-1 focus:ring-blue-400", {
-              ["underline text-blue-400"]: /^(https?:\/\/[^\s]+)$/.test(
-                instanceValue?.toString() || ""
-              ),
-            })}
-            minRows={2}
-            maxRows={12}
-            onClick={(e) =>
-              handleClickFollowLink(e, instanceValue?.toString() || "", false)
-            }
-            tabIndex={tabIndex}
-            value={instanceValue}
-            onChange={(e) => onChange(e.target.value)}
-            onBlur={onBlur}
-            onKeyDown={onKeyDown}
-          />
+          </TooltipContent>
         </Tooltip>
+      ) : (
+        urlInput
       );
       break;
   }
@@ -269,8 +263,8 @@ export const EditablePropertyValue = ({
   return (
     <div
       className={classNames("relative w-full outline-none min-h-12", {
-        ["bg-red-300"]: isFieldChanged,
-        ["bg-yellow-200 transition-colors duration-300"]: isHighlight,
+        ["bg-status-changed"]: isFieldChanged,
+        ["bg-status-highlight transition-colors duration-300"]: isHighlight,
       })}
       ref={wrapperEl}
       onMouseEnter={() => setHovered(true)}
@@ -290,7 +284,7 @@ export const EditablePropertyValue = ({
           <DropdownMenu menu={menuOptions} isSmall disabled={!canChangeType}>
             <button
               role="button"
-              className="p-1 font-mono text-xs text-red-700 bg-white border border-gray-300"
+              className="p-1 font-mono text-xs text-destructive bg-card border border-border"
             >
               {fieldType}
             </button>

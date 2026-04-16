@@ -14,17 +14,20 @@ import {
   actionQueryPage,
   actionSubmitQuery,
 } from "@/atoms/navigator.action";
-import { isModalPickProperty, isModalSorter } from "@/atoms/ui";
+import { isModalPickProperty } from "@/atoms/ui";
 import DropdownMenu from "@/components/DropdownMenu";
 import PropertyList from "@/components/PropertyList";
-import { Button } from "@zendeskgarden/react-buttons";
-import { TooltipModal } from "@zendeskgarden/react-modals";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Tooltip } from "@zendeskgarden/react-tooltips";
 import classNames from "classnames";
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import ShortcutKey from "../ShortcutKey";
-import SorterList from "../SorterList";
 import FilterItem from "./FilterItem";
 
 const NextButton = () => {
@@ -46,11 +49,10 @@ const NextButton = () => {
 
   return (
     <Button
-      size="small"
-      isBasic
-      className={classNames("px-1", {
-        ["pointer-events-none text-gray-300"]: isDisabled,
-      })}
+      variant="ghost"
+      size="sm"
+      disabled={isDisabled}
+      className="px-2 h-7"
       onClick={handleClickNext}
     >
       Next
@@ -90,11 +92,10 @@ const PreviousButton = () => {
 
   return (
     <Button
-      size="small"
-      isBasic
-      className={classNames("px-1", {
-        ["pointer-events-none text-gray-300"]: isDisabled,
-      })}
+      variant="ghost"
+      size="sm"
+      disabled={isDisabled}
+      className="px-2 h-7"
       onClick={handleClickPrevious}
     >
       <svg
@@ -124,10 +125,6 @@ const Filters = () => {
 
   const totalDocs = useRecoilValue(totalDocsWithQueryAtom(collectionPath));
 
-  const [isShowSorterList, setShowSorterList] = useRecoilState(isModalSorter);
-  const propertyBtnRef = useRef<HTMLButtonElement>(null);
-  const sorterBtnRef = useRef<HTMLButtonElement>(null);
-
   const handleAddFilter = () => {
     actionAddFilter("", "==", collectionPath);
   };
@@ -137,7 +134,7 @@ const Filters = () => {
       {
         title: "Without filter",
         hotkey: globalHotKeys.SEND_QUERY_WITHOUT_FILTER.sequences,
-        className: "dark:text-gray-200",
+        className: "text-foreground",
         onClick: () => {
           actionSubmitQuery(false);
         },
@@ -152,54 +149,28 @@ const Filters = () => {
       ))}
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <Button size="small" onClick={handleAddFilter} className="px-3">
+          <Button variant="outline" size="sm" onClick={handleAddFilter} className="px-3 h-7">
             Add Filters
           </Button>
-          <Button
-            size="small"
-            ref={propertyBtnRef}
-            onClick={() => {
-              setShowPropertyList(true);
-            }}
-            className={classNames("px-3", {
-              "bg-blue-100": isShowPropertyList,
-            })}
-          >
-            Properties
-          </Button>
-
-          <TooltipModal
-            referenceElement={
-              isShowPropertyList ? propertyBtnRef.current : null
-            }
-            onClose={() => setShowPropertyList(false)}
-            placement="bottom-start"
-            className="p-2 leading-normal"
-            hasArrow={false}
-            isAnimated={false}
-          >
-            <PropertyList />
-          </TooltipModal>
-
-          {/* <Button
-            size="small"
-            isBasic
-            ref={sorterBtnRef}
-            onClick={() => {
-              setShowSorterList(true);
-            }}
-          >
-            Sort
-          </Button> */}
-
-          <TooltipModal
-            referenceElement={isShowSorterList ? sorterBtnRef.current : null}
-            onClose={() => setShowSorterList(false)}
-            placement="bottom-start"
-            className="p-3 leading-normal"
-          >
-            <SorterList />
-          </TooltipModal>
+          <Popover open={isShowPropertyList} onOpenChange={setShowPropertyList}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className={classNames("px-3 h-7", {
+                  "bg-accent": isShowPropertyList,
+                })}
+              >
+                Properties
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              align="start"
+              className="p-2 w-64"
+            >
+              <PropertyList />
+            </PopoverContent>
+          </Popover>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 px-2 text-sm text-muted-foreground">
@@ -228,9 +199,10 @@ const Filters = () => {
             }
           >
             <Button
-              size="small"
+              variant="outline"
+              size="sm"
               onClick={() => actionNewDocument(collectionPath)}
-              className="px-3"
+              className="px-3 h-7"
             >
               New document
             </Button>
@@ -253,10 +225,9 @@ const Filters = () => {
               }
             >
               <Button
-                size="small"
-                isPrimary
+                size="sm"
                 onClick={() => actionSubmitQuery(true)}
-                className="px-3"
+                className="px-3 h-7 rounded-r-none"
               >
                 Query
               </Button>
@@ -265,9 +236,9 @@ const Filters = () => {
               menu={queryMenu}
               placement="bottom-end"
               className="ml-px"
-              containerClassName="w-60 dark:bg-gray-50"
+              containerClassName="w-60 bg-popover"
             >
-              <Button size="small" isPrimary className="px-0.5">
+              <Button size="sm" className="h-7 px-1 rounded-l-none">
                 <svg
                   className="w-4"
                   xmlns="http://www.w3.org/2000/svg"

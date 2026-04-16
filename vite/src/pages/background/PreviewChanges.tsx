@@ -12,20 +12,18 @@ import {
 import { isShowPreviewChangeModalAtom } from "@/atoms/ui";
 import { ClientDocumentSnapshot } from "@/types/ClientDocumentSnapshot";
 import { getParentPath } from "@/utils/common";
-import { Button } from "@zendeskgarden/react-buttons";
+import { Button } from "@/components/ui/button";
 import {
-  Modal,
-  Header,
-  Footer,
-  FooterItem,
-  Body as ModalBody,
-} from "@zendeskgarden/react-modals";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import classNames from "classnames";
-import { Tag } from "@zendeskgarden/react-tags";
 import { groupBy } from "lodash";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import EscExit from "@/components/EscExit";
 import { actionGoTo } from "@/atoms/navigator.action";
 
 const PreviewChanges = () => {
@@ -87,91 +85,94 @@ const PreviewChanges = () => {
   );
 
   return (
-    <div>
-      <EscExit onExit={() => setShowChangeModal(false)}>
-        <Modal
-          isAnimated={false}
-          isLarge
-          focusOnMount
-          backdropProps={{ onClick: () => setShowChangeModal(false) }}
-        >
-          <Header className="flex flex-row items-center justify-between">
-            <span>Preview changes</span>
-            <svg
-              className="w-6 p-1 ml-auto cursor-pointer"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              onClick={() => setShowChangeModal(false)}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </Header>
-
-          <ModalBody className="px-4">
-            <h3 className="text-lg font-medium">Collections</h3>
-            <table className="w-full mb-4 table-fixed">
-              <thead>
-                <tr>
-                  <th className="w-full"></th>
-                  <th className="w-20"></th>
-                  <th className="w-10"></th>
+    <Dialog
+      open={true}
+      onOpenChange={(open) => !open && setShowChangeModal(false)}
+    >
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+        <DialogHeader>
+          <DialogTitle>Preview changes</DialogTitle>
+        </DialogHeader>
+        <div className="flex-1 overflow-auto px-2 -mx-2">
+          <h3 className="text-lg font-medium">Collections</h3>
+          <table className="w-full mb-4 table-fixed">
+            <thead>
+              <tr>
+                <th className="w-full"></th>
+                <th className="w-20"></th>
+                <th className="w-10"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {deletedCollections.map((collection) => (
+                <tr key={collection}>
+                  <td>
+                    <svg
+                      className="inline-block mr-2"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M5 2.5l.5-.5h2l.5.5v11l-.5.5h-2l-.5-.5v-11zM6 3v10h1V3H6zm3.171.345l.299-.641 1.88-.684.64.299 3.762 10.336-.299.641-1.879.684-.64-.299L9.17 3.345zm1.11.128l3.42 9.396.94-.341-3.42-9.397-.94.342zM1 2.5l.5-.5h2l.5.5v11l-.5.5h-2l-.5-.5v-11zM2 3v10h1V3H2z"
+                      />
+                    </svg>{" "}
+                    {collection}
+                  </td>
+                  <td>
+                    <span className="inline-flex items-center rounded px-2 py-0.5 text-xs font-medium bg-status-deleted text-foreground">
+                      deleted
+                    </span>
+                  </td>
+                  <td />
                 </tr>
-              </thead>
-              <tbody>
-                {deletedCollections.map((collection) => (
-                  <tr key={collection}>
-                    <td>
-                      <svg
-                        className="inline-block mr-2"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 16 16"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          clipRule="evenodd"
-                          d="M5 2.5l.5-.5h2l.5.5v11l-.5.5h-2l-.5-.5v-11zM6 3v10h1V3H6zm3.171.345l.299-.641 1.88-.684.64.299 3.762 10.336-.299.641-1.879.684-.64-.299L9.17 3.345zm1.11.128l3.42 9.396.94-.341-3.42-9.397-.94.342zM1 2.5l.5-.5h2l.5.5v11l-.5.5h-2l-.5-.5v-11zM2 3v10h1V3H2z"
-                        />
-                      </svg>{" "}
-                      {collection}
-                    </td>
-                    <td>
-                      <Tag className="text-white bg-red-400">deleted</Tag>
-                    </td>
-                    <td />
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+              ))}
+            </tbody>
+          </table>
 
-            <h3 className="text-lg font-medium">Documents</h3>
-            {Object.keys(groupSimilarDoc)
-              .sort((a, b) => a.localeCompare(b))
-              .map((collection) => {
-                const sameParentDocs = groupSimilarDoc[collection];
+          <h3 className="text-lg font-medium">Documents</h3>
+          {Object.keys(groupSimilarDoc)
+            .sort((a, b) => a.localeCompare(b))
+            .map((collection) => {
+              const sameParentDocs = groupSimilarDoc[collection];
 
-                return (
-                  <div key={collection}>
-                    <table className="w-full table-fixed">
-                      <thead>
-                        <tr>
-                          <th className="w-full"></th>
-                          <th className="w-20"></th>
-                          <th className="w-10"></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td colSpan={3}>
+              return (
+                <div key={collection}>
+                  <table className="w-full table-fixed">
+                    <thead>
+                      <tr>
+                        <th className="w-full"></th>
+                        <th className="w-20"></th>
+                        <th className="w-10"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td colSpan={3}>
+                          <svg
+                            className="inline-block mr-2"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 16 16"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M5 2.5l.5-.5h2l.5.5v11l-.5.5h-2l-.5-.5v-11zM6 3v10h1V3H6zm3.171.345l.299-.641 1.88-.684.64.299 3.762 10.336-.299.641-1.879.684-.64-.299L9.17 3.345zm1.11.128l3.42 9.396.94-.341-3.42-9.397-.94.342zM1 2.5l.5-.5h2l.5.5v11l-.5.5h-2l-.5-.5v-11zM2 3v10h1V3H2z"
+                            />
+                          </svg>
+                          {collection}
+                        </td>
+                      </tr>
+                      {sameParentDocs.map((doc) => (
+                        <tr key={doc.id} className="hover:bg-accent group">
+                          <td className="pl-4">
                             <svg
                               className="inline-block mr-2"
                               width="16"
@@ -183,106 +184,86 @@ const PreviewChanges = () => {
                               <path
                                 fillRule="evenodd"
                                 clipRule="evenodd"
-                                d="M5 2.5l.5-.5h2l.5.5v11l-.5.5h-2l-.5-.5v-11zM6 3v10h1V3H6zm3.171.345l.299-.641 1.88-.684.64.299 3.762 10.336-.299.641-1.879.684-.64-.299L9.17 3.345zm1.11.128l3.42 9.396.94-.341-3.42-9.397-.94.342zM1 2.5l.5-.5h2l.5.5v11l-.5.5h-2l-.5-.5v-11zM2 3v10h1V3H2z"
+                                d="M13.71 4.29l-3-3L10 1H4L3 2v12l1 1h9l1-1V5l-.29-.71zM13 14H4V2h5v4h4v8zm-3-9V2l3 3h-3z"
                               />
                             </svg>
-                            {collection}
+                            <a
+                              className="font-mono text-sm text-primary underline cursor-pointer"
+                              onClick={() => handleGotoDoc(doc.ref.path)}
+                            >
+                              {doc.id}
+                            </a>
                           </td>
-                        </tr>
-                        {sameParentDocs.map((doc) => (
-                          <tr key={doc.id} className="hover:bg-gray-200 group">
-                            <td className="pl-4">
+                          <td>
+                            <span
+                              className={classNames(
+                                "inline-flex items-center rounded px-2 py-0.5 text-xs font-medium text-foreground",
+                                {
+                                  ["bg-status-deleted"]:
+                                    getTag(doc) === "deleted",
+                                  ["bg-status-changed"]:
+                                    getTag(doc) === "modified",
+                                  ["bg-status-new"]: getTag(doc) === "new",
+                                }
+                              )}
+                            >
+                              {getTag(doc)}
+                            </span>
+                          </td>
+                          <td>
+                            {/* // TODO: Tooltip to let user know this is reverse button */}
+                            <button
+                              className="p-1 opacity-0 group-hover:opacity-100"
+                              onClick={() => handleReverseDoc(doc)}
+                            >
                               <svg
-                                className="inline-block mr-2"
-                                width="16"
-                                height="16"
-                                viewBox="0 0 16 16"
                                 xmlns="http://www.w3.org/2000/svg"
-                                fill="currentColor"
+                                className="w-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
                               >
                                 <path
-                                  fillRule="evenodd"
-                                  clipRule="evenodd"
-                                  d="M13.71 4.29l-3-3L10 1H4L3 2v12l1 1h9l1-1V5l-.29-.71zM13 14H4V2h5v4h4v8zm-3-9V2l3 3h-3z"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
                                 />
                               </svg>
-                              <a
-                                className="font-mono text-sm text-blue-500 underline cursor-pointer"
-                                onClick={() => handleGotoDoc(doc.ref.path)}
-                              >
-                                {doc.id}
-                              </a>
-                            </td>
-                            <td>
-                              <Tag
-                                className={classNames("text-white", {
-                                  ["bg-red-400"]: getTag(doc) === "deleted",
-                                  ["bg-blue-300"]: getTag(doc) === "modified",
-                                  ["bg-green-400"]: getTag(doc) === "new",
-                                })}
-                              >
-                                {getTag(doc)}
-                              </Tag>
-                            </td>
-                            <td>
-                              {/* // TODO: Tooltip to let user know this is reverse button */}
-                              <button
-                                className="p-1 opacity-0 group-hover:opacity-100"
-                                onClick={() => handleReverseDoc(doc)}
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  className="w-4"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke="currentColor"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
-                                  />
-                                </svg>
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                );
-              })}
-          </ModalBody>
-          <Footer className="p-4">
-            <FooterItem>
-              <Button size="small" onClick={handleOnReverseAll}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 mr-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
-                  />
-                </svg>
-                Revert all
-              </Button>
-            </FooterItem>
-            <FooterItem>
-              <Button size="small" isPrimary onClick={handleOnCommit}>
-                Commit
-              </Button>
-            </FooterItem>
-          </Footer>
-        </Modal>
-      </EscExit>
-    </div>
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              );
+            })}
+        </div>
+        <DialogFooter>
+          <Button variant="outline" size="sm" onClick={handleOnReverseAll}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 mr-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
+              />
+            </svg>
+            Revert all
+          </Button>
+          <Button size="sm" onClick={handleOnCommit}>
+            Commit
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 

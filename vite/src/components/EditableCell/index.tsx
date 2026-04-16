@@ -5,12 +5,17 @@ import { useContextMenu } from "@/hooks/contextMenu";
 import { ClientDocumentSnapshot } from "@/types/ClientDocumentSnapshot";
 import { getPathEntities, isNumeric } from "@/utils/common";
 import { getFireStoreType } from "@/utils/simplifr";
-import { Checkbox, Field, Label } from "@zendeskgarden/react-forms";
-import { Tooltip } from "@zendeskgarden/react-tooltips";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import classNames from "classnames";
 import { DocRef } from "firestore-serializers";
 import { isEqual, isUndefined } from "lodash";
-import { Textarea } from "@zendeskgarden/react-forms";
 import React, {
   ReactElement,
   ReactNode,
@@ -128,14 +133,12 @@ const EditableCell = ({
       <Textarea
         ref={inputEl}
         className={classNames(
-          "w-full absolute bg-transparent overflow-hidden truncate h-full min-h-full outline-none ring-inset dark:focus:bg-gray-900 focus:bg-blue-100 p-1.5 pt-2 focus:ring-1 focus:ring-blue-400 focus:z-50 focus:shadow-lg",
+          "w-full absolute bg-transparent overflow-hidden truncate h-full min-h-full outline-none border-0 rounded-none ring-inset focus:bg-accent p-1.5 pt-2 focus:ring-1 focus:ring-ring focus:z-50 focus:shadow-lg",
           {
             ["text-right"]: fieldType === "number",
             ["h-focus-full-2"]: String(instanceValue).includes("\n"),
           }
         )}
-        // isResizable={String(instanceValue).includes("\n")}
-        isBare
         value={instanceValue as string}
         onChange={(e) => onChange(e.target.value)}
         onBlur={onBlur}
@@ -161,7 +164,7 @@ const EditableCell = ({
           break;
         case "geopoint":
           defaultEditor = (
-            <div className="p-1.5 font-mono text-red-700">geopoint</div>
+            <div className="p-1.5 font-mono text-destructive">geopoint</div>
           );
           break;
         case "timestamp":
@@ -175,56 +178,52 @@ const EditableCell = ({
         case "boolean":
           defaultEditor = (
             <div className="p-1.5">
-              <Field>
+              <div className="flex items-center gap-2">
                 <Checkbox
+                  id={fieldPath}
                   checked={value as boolean}
-                  onChange={() => setValue(Boolean(!value))}
-                >
-                  <Label hidden>{value ? "true" : "false"}</Label>
-                </Checkbox>
-              </Field>
+                  onCheckedChange={(v) => setValue(Boolean(v))}
+                />
+                <Label htmlFor={fieldPath} hidden>
+                  {value ? "true" : "false"}
+                </Label>
+              </div>
             </div>
           );
           break;
         case "reference":
           const refValue = instanceValue as DocRef;
           defaultEditor = (
-            <Tooltip
-              placement="top-start"
-              delayMS={100}
-              hasArrow={false}
-              size="medium"
-              type="light"
-              className="w-32"
-              content={
-                <span className="dark:text-gray-200">
+            <Tooltip delayDuration={100}>
+              <TooltipTrigger asChild>
+                <Textarea
+                  ref={inputEl}
+                  className={classNames(
+                    "focus:ring-1 p-1.5 pt-2 bg-transparent break-all outline-none border-0 rounded-none min-h-0 focus:ring-ring h-full w-full truncate underline text-primary focus:z-50 focus:shadow-lg",
+                    {
+                      ["bg-status-changed"]: isFieldChanged,
+                      ["bg-status-highlight transition-colors duration-300"]: isHighlight,
+                    }
+                  )}
+                  onClick={(e) => handleClickFollowLink(e as any, refValue.path)}
+                  tabIndex={tabIndex}
+                  value={refValue.path}
+                  onChange={(e) => onChange(new DocRef(e.target.value))}
+                  onBlur={onBlur}
+                  onKeyDown={onKeyDown}
+                />
+              </TooltipTrigger>
+              <TooltipContent side="top" align="start" className="w-32">
+                <span className="text-foreground">
                   <a
-                    className="text-blue-400 cursor-pointer"
+                    className="text-primary cursor-pointer"
                     onClick={() => handleClickFollowLink(null, refValue.path)}
                   >
                     Follow reference
                   </a>{" "}
                   (cmd + click)
                 </span>
-              }
-            >
-              <Textarea
-                ref={inputEl}
-                className={classNames(
-                  "focus:ring-1 p-1.5 pt-2 bg-transparent break-all outline-none focus:ring-blue-400 h-full w-full truncate underline text-blue-400 focus:z-50 focus:shadow-lg",
-                  {
-                    ["bg-blue-200 dark:bg-gray-500"]: isFieldChanged,
-                    ["bg-yellow-200 transition-colors duration-300"]: isHighlight,
-                  }
-                )}
-                isBare
-                onClick={(e) => handleClickFollowLink(e as any, refValue.path)}
-                tabIndex={tabIndex}
-                value={refValue.path}
-                onChange={(e) => onChange(new DocRef(e.target.value))}
-                onBlur={onBlur}
-                onKeyDown={onKeyDown}
-              />
+              </TooltipContent>
             </Tooltip>
           );
           break;
@@ -238,8 +237,8 @@ const EditableCell = ({
     <div
       ref={wrapperEl}
       className={classNames("w-full h-full outline-none group relative", {
-        ["bg-blue-200 dark:bg-gray-500"]: isFieldChanged,
-        ["bg-yellow-200 transition-colors duration-300"]: isHighlight,
+        ["bg-status-changed"]: isFieldChanged,
+        ["bg-status-highlight transition-colors duration-300"]: isHighlight,
       })}
     >
       {editorComponent}
@@ -269,10 +268,10 @@ export const IDReadOnlyField = ({
     <div className="relative w-full h-full px-px font-mono group">
       <input
         className={classNames(
-          "focus:ring-1 focus:ring-blue-400 w-full h-full bg-transparent outline-none ring-inset focus:bg-blue-100 p-1.5 dark:text-gray-200 font-mono text-sm",
+          "focus:ring-1 focus:ring-ring w-full h-full bg-transparent outline-none ring-inset focus:bg-accent p-1.5 text-foreground font-mono text-sm",
           {
-            ["pl-0.5 border-l-4 border-blue-400"]: isActive,
-            ["bg-green-200"]: isNew,
+            ["pl-0.5 border-l-4 border-primary"]: isActive,
+            ["bg-status-new"]: isNew,
           }
         )}
         value={value}
@@ -280,7 +279,7 @@ export const IDReadOnlyField = ({
       />
       <CopyIcon
         value={value || ""}
-        className="absolute w-6 transform -translate-y-1/2 bg-white opacity-0 cursor-pointer right-1 top-1/2 group-hover:opacity-100 p-0.5 rounded"
+        className="absolute w-6 transform -translate-y-1/2 bg-card opacity-0 cursor-pointer right-1 top-1/2 group-hover:opacity-100 p-0.5 rounded"
       />
     </div>
   );

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Tabs, TabList, Tab } from "@zendeskgarden/react-tabs";
 import classNames from "classnames";
+import { X, Plus } from "lucide-react";
 // import BrowserView from "react-electron-browser-view";
 
 const TabsPage = () => {
@@ -71,56 +71,41 @@ const TabsPage = () => {
         id="drag-title"
         onDoubleClick={handleToggleMaximumWindow}
       >
-        <Tabs selectedItem={selectedTab} onChange={handleSelectTab}>
-          <TabList
-            className="box-content m-0 border-b-0 bg-background"
-          >
-            {tabList.map((tab) => (
-              <Tab
-                item={tab}
+        <div className="flex flex-row items-stretch">
+          {tabList.map((tab) => {
+            const isActive = tab === selectedTab;
+            return (
+              <button
+                type="button"
                 key={tab}
+                onClick={() => handleSelectTab(tab)}
                 className={classNames(
-                  "py-2 px-8 border-0 text-left group relative",
+                  "group relative flex items-center gap-2 py-2 pl-4 pr-8 text-sm border-r border-border transition-colors cursor-pointer",
                   {
-                    ["bg-card text-foreground"]: tab === selectedTab,
-                    ["text-muted-foreground"]: tab !== selectedTab,
+                    "bg-card text-foreground": isActive,
+                    "text-muted-foreground hover:bg-accent hover:text-foreground": !isActive,
                   }
                 )}
               >
-                {tab}
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  className="absolute transform -translate-y-1/2 opacity-0 right-2 top-1/2 group-hover:opacity-100"
+                <span className="truncate max-w-[200px]">{tab}</span>
+                <span
+                  role="button"
                   onClick={(e) => handleCloseTab(e, tab)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 rounded hover:bg-accent text-muted-foreground hover:text-foreground p-0.5"
                 >
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M8 8.707l3.646 3.647.708-.707L8.707 8l3.647-3.646-.707-.708L8 7.293 4.354 3.646l-.707.708L7.293 8l-3.646 3.646.707.708L8 8.707z"
-                  />
-                </svg>
-              </Tab>
-            ))}
-            <Tab
-              item="add"
-              className="px-3 py-2 border-0 text-muted-foreground"
-            >
-              <svg
-                width="18"
-                height="20"
-                viewBox="0 0 16 16"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-              >
-                <path d="M14 7v1H8v6H7V8H1V7h6V1h1v6h6z" />
-              </svg>
-            </Tab>
-          </TabList>
-        </Tabs>
+                  <X className="w-3.5 h-3.5" />
+                </span>
+              </button>
+            );
+          })}
+          <button
+            type="button"
+            onClick={() => handleSelectTab("add")}
+            className="flex items-center justify-center px-3 py-2 text-muted-foreground hover:bg-accent hover:text-foreground border-r border-border"
+          >
+            <Plus className="w-4 h-4" />
+          </button>
+        </div>
         <section className="draggable-containers p-3 xl:w-auto flex-1  md:w-auto sm:w-auto"></section>
         {!isMacOS && (
           <div className="flex flex-row items-stretch justify-center">
@@ -146,7 +131,7 @@ const TabsPage = () => {
               />
             </div>
 
-            <div className="p-3 hover:bg-red-600" onClick={handleCloseWindow}>
+            <div className="p-3 hover:bg-destructive" onClick={handleCloseWindow}>
               <img
                 className="icon"
                 srcSet="icons/close-w-10.png 1x, icons/close-w-12.png 1.25x, icons/close-w-15.png 1.5x, icons/close-w-15.png 1.75x, icons/close-w-20.png 2x, icons/close-w-20.png 2.25x, icons/close-w-24.png 2.5x, icons/close-w-30.png 3x, icons/close-w-30.png 3.5x"

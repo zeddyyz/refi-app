@@ -10,21 +10,11 @@ import {
   isImportModalAtom,
 } from "@/atoms/ui";
 import { notifyErrorPromise } from "@/atoms/ui.action";
-import {
-  ignoreBackdropEvent,
-  isCollection,
-  readerFilePromise,
-} from "@/utils/common";
-import {
-  Checkbox,
-  Field,
-  FileUpload,
-  Input,
-  Label,
-  Message,
-} from "@zendeskgarden/react-forms";
-import { Button as ShadcnButton } from "@/components/ui/button";
-import { Input as ShadcnInput } from "@/components/ui/input";
+import { isCollection, readerFilePromise } from "@/utils/common";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -32,6 +22,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 import csvtojson from "csvtojson";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
@@ -138,8 +129,8 @@ const ImportModal = () => {
       if (fileType === "csv") {
         const sampleColumn = Object.keys(docs[0]);
         return (
-          <Field>
-            <Label>Id field</Label>
+          <div className="space-y-1.5">
+            <Label htmlFor="import-id-field">Id field</Label>
             <Controller
               control={control}
               name="idField"
@@ -152,19 +143,19 @@ const ImportModal = () => {
                 />
               )}
             />
-          </Field>
+          </div>
         );
       }
       return (
-        <Field>
-          <Label>Id field</Label>
+        <div className="space-y-1.5">
+          <Label htmlFor="import-id-field">Id field</Label>
           <Input
-            isCompact
+            id="import-id-field"
             name="idField"
             defaultValue="__id__"
             ref={register}
           />
-        </Field>
+        </div>
       );
     }
 
@@ -182,8 +173,8 @@ const ImportModal = () => {
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="p-4">
           <div className="space-y-4 h-96">
-            <Field>
-              <Label>Path</Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="import-path">Path</Label>
               <Controller
                 control={control}
                 name="path"
@@ -195,83 +186,95 @@ const ImportModal = () => {
                 }}
                 render={({ onChange, value, ref }, { invalid }) => (
                   <Input
-                    isCompact
+                    id="import-path"
                     value={value}
-                    validation={invalid ? "error" : "success"}
+                    aria-invalid={invalid}
+                    className={cn(invalid && "border-destructive")}
                     onChange={(e) => onChange(e.target.value)}
                     ref={ref}
                   />
                 )}
               />
               {errors.path && (
-                <Message validation="error">{errors.path.message}</Message>
+                <p className="text-sm text-destructive mt-1">
+                  {errors.path.message}
+                </p>
               )}
-            </Field>
-            <Field>
-              <FileUpload {...getRootProps()} isDragging={isDragActive}>
-                {isDragActive ? (
-                  <span>Drop JSON/CSV file here</span>
-                ) : (
-                  <div className="flex flex-col items-center justify-center">
-                    {file ? (
-                      file.name
-                    ) : (
-                      <span>Choose a JSON/CSV file to import</span>
-                    )}
-                  </div>
-                )}
-                <Input {...getInputProps()} />
-              </FileUpload>
-            </Field>
-            <Field>
+            </div>
+            <div
+              {...getRootProps({
+                className: cn(
+                  "border-2 border-dashed border-border rounded-md p-6 text-center cursor-pointer transition-colors hover:bg-accent",
+                  isDragActive && "bg-accent border-primary"
+                ),
+              })}
+            >
+              {isDragActive ? (
+                <span className="text-sm text-foreground">
+                  Drop JSON/CSV file here
+                </span>
+              ) : (
+                <div className="flex flex-col items-center justify-center text-sm text-foreground">
+                  {file ? (
+                    file.name
+                  ) : (
+                    <span>Choose a JSON/CSV file to import</span>
+                  )}
+                </div>
+              )}
+              <input {...getInputProps()} />
+            </div>
+            <div className="flex items-center gap-2">
               <Controller
                 control={control}
                 name="autoId"
                 defaultValue={true}
                 render={({ onChange, value, ref }) => (
                   <Checkbox
+                    id="import-auto-id"
                     ref={ref}
                     checked={value}
-                    onChange={() => onChange(!value)}
-                  >
-                    <Label>Auto generate ID</Label>
-                  </Checkbox>
+                    onCheckedChange={(c) => onChange(!!c)}
+                  />
                 )}
               />
-            </Field>
+              <Label htmlFor="import-auto-id">Auto generate ID</Label>
+            </div>
             {idField}
             {fileType === "csv" && (
-              <Field>
+              <div className="flex items-center gap-2">
                 <Controller
                   control={control}
                   name="autoParseJSON"
                   defaultValue={true}
                   render={({ onChange, value, ref }) => (
                     <Checkbox
+                      id="import-auto-parse-json"
                       ref={ref}
                       checked={value}
-                      onChange={() => onChange(!value)}
-                    >
-                      <Label>Auto parse JSON value</Label>
-                    </Checkbox>
+                      onCheckedChange={(c) => onChange(!!c)}
+                    />
                   )}
                 />
-              </Field>
+                <Label htmlFor="import-auto-parse-json">
+                  Auto parse JSON value
+                </Label>
+              </div>
             )}
           </div>
         </form>
         <DialogFooter className="p-4">
-          <ShadcnButton variant="outline" size="sm" onClick={() => handleOnCancel()}>
+          <Button variant="outline" size="sm" onClick={() => handleOnCancel()}>
             Cancel
-          </ShadcnButton>
-          <ShadcnButton
+          </Button>
+          <Button
             size="sm"
             disabled={!formState.isValid || docs.length <= 0}
             onClick={handleSubmit(onSubmit)}
             type="submit"
           >
             Import {docs.length > 0 && `${docs.length} doc(s)`}
-          </ShadcnButton>
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

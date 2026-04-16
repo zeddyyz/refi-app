@@ -30,7 +30,7 @@ import {
   prettifyPath,
 } from "@/utils/common";
 import { COLLECTION_PREFIX } from "@/utils/contant";
-import { Input } from "@zendeskgarden/react-forms";
+import { Input } from "@/components/ui/input";
 import classNames from "classnames";
 import { uniq, uniqueId } from "lodash";
 import * as immutable from "object-path-immutable";
@@ -61,8 +61,8 @@ const NodeComponent = ({ path, name, isCollection }: IFSDataNode) => {
   return (
     <span
       className={classNames("text-foreground whitespace-nowrap", {
-        ["text-green-600"]: doc?.isNew,
-        ["text-blue-600"]: doc?.isChanged(),
+        ["text-primary font-medium"]: doc?.isNew,
+        ["text-primary"]: doc?.isChanged(),
         ["font-mono text-xs"]: !isCollection,
       })}
     >
@@ -485,10 +485,9 @@ function TreeView({ allDocs, deletedDocs, pathAvailable }: ITreeViewProps) {
     <div className="flex flex-col h-full">
       <Input
         placeholder="Search for item..."
-        isCompact
         value={searchInput}
         onChange={(e) => setSearchInput(e.target.value)}
-        className="bg-background border-border"
+        className="bg-background border-border h-7 text-sm rounded-none border-x-0 border-t-0"
       />
       <div
         className="flex flex-col h-full mt-2"

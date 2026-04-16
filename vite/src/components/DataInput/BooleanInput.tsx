@@ -1,5 +1,7 @@
-import React from "react";
-import { Checkbox, Field, Label } from "@zendeskgarden/react-forms";
+import React, { useRef } from "react";
+import { uniqueId } from "lodash";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 interface IBooleanInputProps {
   value: boolean;
@@ -7,19 +9,20 @@ interface IBooleanInputProps {
 }
 
 const BooleanInput = ({ value, onChange }: IBooleanInputProps) => {
-  const handleCheckBoxChange = () => {
-    onChange(!value);
-  };
+  const idRef = useRef(uniqueId("boolean-input-"));
 
   return (
     <div className="h-12 p-1">
-      <Field>
-        <Checkbox checked={value} onChange={handleCheckBoxChange}>
-          <Label isRegular hidden>
-            {value ? "true" : "false"}
-          </Label>
-        </Checkbox>
-      </Field>
+      <div className="flex items-center gap-2">
+        <Checkbox
+          id={idRef.current}
+          checked={value}
+          onCheckedChange={(v) => onChange(!!v)}
+        />
+        <Label htmlFor={idRef.current} hidden>
+          {value ? "true" : "false"}
+        </Label>
+      </div>
     </div>
   );
 };

@@ -1,23 +1,30 @@
-import { GARDEN_PLACEMENT, TooltipModal } from "@zendeskgarden/react-modals";
-import classNames from "classnames";
-import { useSelect } from "downshift";
-import React, { useRef, useState } from "react";
-import ReactDOM from "react-dom";
+import {
+  DropdownMenu as Root,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
+import React from "react";
 import ShortcutKey from "../ShortcutKey";
 
+interface IMenuItem {
+  title: string;
+  onClick: () => void;
+  hotkey?: string | string[];
+  hint?: string;
+  className?: string;
+  disabled?: boolean;
+}
+
 interface IDropdownMenuProps {
-  children: React.ReactElement;
+  children: React.ReactNode;
   className?: string;
   containerClassName?: string;
   placement?: string;
   isSmall?: boolean;
   disabled?: boolean;
-  menu: {
-    title: string;
-    hotkey?: string | string[];
-    hint?: string;
-    onClick: () => void;
-  }[];
+  menu: IMenuItem[];
 }
 
 function DropdownMenu({
@@ -28,63 +35,47 @@ function DropdownMenu({
   menu,
   disabled = false,
 }: IDropdownMenuProps) {
-  const {
-    isOpen,
-    getToggleButtonProps,
-    getMenuProps,
-    highlightedIndex,
-    getItemProps,
-    toggleMenu,
-  } = useSelect({
-    items: menu,
-    onSelectedItemChange: ({ selectedItem }) => selectedItem?.onClick(),
-  });
-  const childRef = useRef<HTMLButtonElement>(null);
+  const align = placement.endsWith("end")
+    ? "end"
+    : placement.endsWith("start")
+    ? "start"
+    : "center";
+  const side = placement.startsWith("top")
+    ? "top"
+    : placement.startsWith("left")
+    ? "left"
+    : placement.startsWith("right")
+    ? "right"
+    : "bottom";
 
   return (
-    <div className={className}>
-      {React.cloneElement(
-        children,
-        getToggleButtonProps({ disabled, ref: childRef })
-      )}
-      {ReactDOM.createPortal(
-        <TooltipModal
-          referenceElement={isOpen ? childRef.current : null}
-          onClose={() => toggleMenu()}
-          placement={placement as GARDEN_PLACEMENT}
-          className={classNames(
-            "w-20 px-0 py-2 leading-normal shadow-lg",
-            containerClassName
-          )}
-          restoreFocus={false}
-          focusOnMount={false}
-          hasArrow={false}
-          isAnimated={false}
-        >
-          <ul {...getMenuProps()} className="outline-none">
-            {menu.map((item, index) => (
-              <li
-                key={`${item.title}${index}`}
-                {...getItemProps({ item, index })}
-                className={classNames(
-                  "cursor-pointer px-3 py-1 text-sm text-gray-700 flex flex-row justify-between items-center",
-                  {
-                    ["bg-gray-200"]: highlightedIndex === index,
-                  }
-                )}
-              >
-                <span>{item.title}</span>
-                {/* <ShortcutKey hotkey={"Command+X"} /> */}
-                {item.hotkey && (
-                  <ShortcutKey hotkey={item.hotkey} size="small" />
-                )}
-              </li>
-            ))}
-          </ul>
-        </TooltipModal>,
-        document.getElementById("root-body") || document.body
-      )}
-    </div>
+    <Root>
+      <DropdownMenuTrigger asChild disabled={disabled} className={className}>
+        {children}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align={align as "start" | "end" | "center"}
+        side={side as "top" | "bottom" | "left" | "right"}
+        className={cn("min-w-[8rem]", containerClassName)}
+      >
+        {menu.map((item, index) => (
+          <DropdownMenuItem
+            key={`${item.title}${index}`}
+            disabled={item.disabled}
+            onSelect={() => item.onClick()}
+            className={cn(
+              "flex flex-row justify-between items-center gap-4 cursor-pointer",
+              item.className
+            )}
+          >
+            <span>{item.title}</span>
+            {item.hotkey && (
+              <ShortcutKey hotkey={item.hotkey} size="small" />
+            )}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </Root>
   );
 }
 

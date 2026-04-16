@@ -1,4 +1,4 @@
-import { Input } from "@zendeskgarden/react-forms";
+import { Input } from "@/components/ui/input";
 import { useCombobox } from "downshift";
 import React, { ReactElement, useEffect, useState } from "react";
 import classNames from "classnames";
@@ -69,14 +69,14 @@ const InputComboBox = ({
           {...getInputProps()}
           ref={inputRef}
           placeholder={placeholder}
-          isCompact
+          className="h-7 text-sm"
         />
       </div>
       {isOpen && (
         <ul
           {...getMenuProps()}
           className={classNames(
-            "absolute z-20 opacity-0 pointer-events-none max-w-md min-w-full overflow-y-auto bg-white border border-gray-300 shadow-md max-h-64 top-8",
+            "absolute z-20 opacity-0 pointer-events-none max-w-md min-w-full overflow-y-auto bg-popover text-popover-foreground border border-border shadow-md max-h-64 top-8",
             {
               "opacity-100 pointer-events-auto": isOpen,
             }
@@ -87,7 +87,7 @@ const InputComboBox = ({
               key={`${item}${index}`}
               {...getItemProps({ item, index })}
               className={classNames("h-7 p-1 truncate", {
-                ["bg-blue-200"]: highlightedIndex === index,
+                ["bg-accent text-accent-foreground"]: highlightedIndex === index,
               })}
             >
               {item}

@@ -9,8 +9,8 @@ import { isArrayOp, isNumeric } from "@/utils/common";
 import { convertFSValue } from "@/utils/fieldConverter";
 import { operatorOptions } from "@/utils/searcher";
 import { getFireStoreType } from "@/utils/simplifr";
-import { Button, IconButton } from "@zendeskgarden/react-buttons";
-import { Input } from "@zendeskgarden/react-forms";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import classNames from "classnames";
 import immer from "immer";
 import React, { useLayoutEffect, useMemo, useRef } from "react";
@@ -174,22 +174,23 @@ const FilterItem = ({ id }: { id: string }) => {
           {filter.operator.values.map((value, index) => (
             <div className="relative group" key={index}>
               <div className="absolute z-20 top-1 left-1">
-                <DropdownMenu
-                  menu={menuOptions(value, index)}
-                  isSmall
-                  containerClassName="w-24"
-                >
-                  <button
-                    role="button"
-                    className="p-1 font-mono text-xs text-red-700 hover:bg-white hover:border hover:border-gray-300"
-                    tabIndex={-1}
-                  >
-                    {getFireStoreType(value)}
-                  </button>
-                </DropdownMenu>
+          <DropdownMenu
+            menu={menuOptions(value, index)}
+            isSmall
+            containerClassName="w-24"
+          >
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 px-2 text-destructive font-mono text-xs"
+              tabIndex={-1}
+            >
+              {getFireStoreType(value)}
+            </Button>
+          </DropdownMenu>
               </div>
               {getFireStoreType(value) === "timestamp" ? (
-                <div className="h-8 pl-20 pr-5 border border-gray-300">
+                <div className="h-8 pl-20 pr-5 border border-border">
                   <DateTimePicker
                     value={value as firebase.firestore.Timestamp}
                     onChange={(newValue) =>
@@ -199,9 +200,8 @@ const FilterItem = ({ id }: { id: string }) => {
                 </div>
               ) : (
                 <Input
-                  isCompact
-                  className={classNames("pl-16", {
-                    ["text-gray-400"]: typeof value === "boolean",
+                  className={classNames("pl-16 h-7 text-sm", {
+                    ["text-muted-foreground"]: typeof value === "boolean",
                   })}
                   value={String(value)}
                   tabIndex={index * 10 + 1}
@@ -212,7 +212,7 @@ const FilterItem = ({ id }: { id: string }) => {
                 />
               )}
               <button
-                className="absolute top-0 right-0 z-20 px-1 py-2 text-gray-500 opacity-0 group-hover:opacity-100"
+                className="absolute top-0 right-0 z-20 px-1 py-2 text-muted-foreground opacity-0 group-hover:opacity-100"
                 onClick={() => handleRemoveItem(index)}
               >
                 <div className="w-5">
@@ -234,8 +234,9 @@ const FilterItem = ({ id }: { id: string }) => {
             </div>
           ))}
           <Button
-            size="small"
-            className="w-24"
+            variant="outline"
+            size="sm"
+            className="w-24 h-7 px-3"
             title="Add item"
             onClick={handleAddItem}
           >
@@ -271,16 +272,17 @@ const FilterItem = ({ id }: { id: string }) => {
       <div className="relative">
         <div className="absolute z-20 top-1 left-1">
           <DropdownMenu menu={menuOptions} containerClassName="w-24">
-            <button
-              role="button"
-              className="p-1 font-mono text-xs text-red-700 hover:bg-white hover:border hover:border-gray-300"
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 px-2 text-destructive font-mono text-xs"
             >
               {inputType}
-            </button>
+            </Button>
           </DropdownMenu>
         </div>
         {inputType === "timestamp" ? (
-          <div className="h-8 pl-24 border border-gray-300">
+          <div className="h-8 pl-24 border border-border">
             <DateTimePicker
               value={filter.operator.values as firebase.firestore.Timestamp}
               onChange={(newValue) => handleChangeValue(newValue)}
@@ -288,9 +290,8 @@ const FilterItem = ({ id }: { id: string }) => {
           </div>
         ) : (
           <Input
-            isCompact
-            className={classNames("pl-24", {
-              ["text-gray-400"]: typeof filter.operator.values === "boolean",
+            className={classNames("pl-24 h-7 text-sm", {
+              ["text-muted-foreground"]: typeof filter.operator.values === "boolean",
             })}
             value={String(filter?.operator.values)}
             onChange={(e) => handleChangeValue(e.target.value)}
@@ -321,40 +322,36 @@ const FilterItem = ({ id }: { id: string }) => {
         />
       </div>
       <div className="w-full">{inputComponent}</div>
-      <IconButton size="small" isPill onClick={handleToggleActiveFilter}>
-        <div className="w-5">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M15 2v1.67l-5 4.759V14H6V8.429l-5-4.76V2h14zM7 8v5h2V8l5-4.76V3H2v.24L7 8z"
-            />
-          </svg>
-        </div>
-      </IconButton>
-      <IconButton size="small" isPill onClick={handleRemoveFilter}>
-        <div className="w-5">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M10 3h3v1h-1v9l-1 1H4l-1-1V4H2V3h3V2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1zM9 2H6v1h3V2zM4 13h7V4H4v9zm2-8H5v7h1V5zm1 0h1v7H7V5zm2 0h1v7H9V5z"
-            />
-          </svg>
-        </div>
-      </IconButton>
+      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleToggleActiveFilter}>
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+        >
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M15 2v1.67l-5 4.759V14H6V8.429l-5-4.76V2h14zM7 8v5h2V8l5-4.76V3H2v.24L7 8z"
+          />
+        </svg>
+      </Button>
+      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleRemoveFilter}>
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+        >
+          <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M10 3h3v1h-1v9l-1 1H4l-1-1V4H2V3h3V2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1zM9 2H6v1h3V2zM4 13h7V4H4v9zm2-8H5v7h1V5zm1 0h1v7H7V5zm2 0h1v7H9V5z"
+          />
+        </svg>
+      </Button>
     </div>
   );
 };

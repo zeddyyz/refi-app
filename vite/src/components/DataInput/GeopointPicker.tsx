@@ -34,7 +34,7 @@ const GeopointPicker = ({ value, onChange }: IGeopointPickerProps) => {
         <div>
           <div className="inline-block w-10">lat </div>
           <input
-            className="border-0 w-32 border-b border-gray-400 outline-none ring-0 p-0.5 focus:bg-blue-100 text-sm"
+            className="border-0 w-32 border-b border-border outline-none ring-0 p-0.5 focus:bg-accent text-sm"
             name="lat"
             type="number"
             defaultValue={0}
@@ -45,7 +45,7 @@ const GeopointPicker = ({ value, onChange }: IGeopointPickerProps) => {
         <div>
           <div className="inline-block w-10">long </div>
           <input
-            className="border-0 w-32 border-b border-gray-400 outline-none ring-0 p-0.5 focus:bg-blue-100 text-sm"
+            className="border-0 w-32 border-b border-border outline-none ring-0 p-0.5 focus:bg-accent text-sm"
             name="long"
             type="number"
             defaultValue={0}

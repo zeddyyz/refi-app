@@ -48,6 +48,12 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        status: {
+          changed: "hsl(var(--status-changed))",
+          new: "hsl(var(--status-new))",
+          highlight: "hsl(var(--status-highlight))",
+          deleted: "hsl(var(--status-deleted))",
+        },
       },
       fontSize: {
         key: "10px", // Keep existing custom size

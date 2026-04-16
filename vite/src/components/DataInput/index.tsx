@@ -1,4 +1,4 @@
-import { Textarea } from "@zendeskgarden/react-forms";
+import { Textarea } from "@/components/ui/textarea";
 import React, { useMemo } from "react";
 import classNames from "classnames";
 
@@ -13,9 +13,8 @@ const DataInput = (props: any, ref) => {
     <Textarea
       {...props}
       ref={ref}
-      isBare
       className={classNames(
-        "w-full outline-none ring-inset focus:bg-blue-100 p-1.5 border-none focus:ring-0 dark:text-gray-200 dark:focus:bg-gray-900",
+        "w-full outline-none ring-inset focus:bg-accent text-foreground p-1.5 bg-transparent border-0 focus:ring-0",
         {
           ["h-8"]: isMultipleLine || isVeryLong,
         },

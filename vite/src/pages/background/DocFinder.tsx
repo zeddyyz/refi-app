@@ -1,14 +1,9 @@
 import { allDocsAtom } from "@/atoms/firestore";
 import { isShowDocFinderModalCommandAtom } from "@/atoms/ui";
-import { Input } from "@zendeskgarden/react-forms";
-import { Body as ModalBody, Modal } from "@zendeskgarden/react-modals";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import React, { useEffect, useMemo, useState } from "react";
-import { HotKeys, withHotKeys } from "react-hotkeys";
 import { useRecoilState, useRecoilValue } from "recoil";
-
-const KEYMAP = {
-  CLOSE_MODAL: "Escape",
-};
 
 const DocFinder = () => {
   const [
@@ -40,54 +35,40 @@ const DocFinder = () => {
   // TODO: Lazy get all docs
 
   return (
-    <div>
-      {isShowDocFinderModalCommand && (
-        <Modal
-          isAnimated={false}
-          isLarge
-          focusOnMount
-          backdropProps={{
-            onClick: () => setShowDocFinderModalCommand(false),
-            className: "justify-center",
-          }}
-          isCentered={false}
+    <Dialog
+      open={isShowDocFinderModalCommand}
+      onOpenChange={(open) => !open && setShowDocFinderModalCommand(false)}
+    >
+      <DialogContent className="max-w-lg p-0 gap-0 overflow-hidden">
+        <div className="p-3 border-b border-border">
+          <Input
+            placeholder="Search documents, collections by path, id"
+            tabIndex={1}
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            autoFocus
+            className="h-9"
+          />
+        </div>
+        <div
+          className="max-h-80 overflow-auto p-1"
+          role="menu"
+          aria-orientation="vertical"
+          aria-labelledby="options-menu"
         >
-          <HotKeys
-            keyMap={KEYMAP}
-            handlers={{
-              CLOSE_MODAL: () => setShowDocFinderModalCommand(false),
-            }}
-            allowChanges
-          >
-            <ModalBody className="p-3">
-              <Input
-                placeholder="Search documents, collections by path, id"
-                tabIndex={1}
-                value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
-              />
-              <div
-                className="py-1 mt-2 rounded"
-                role="menu"
-                aria-orientation="vertical"
-                aria-labelledby="options-menu"
-              >
-                {filteredDocs.map((doc) => (
-                  <a
-                    href="#"
-                    key={doc.id}
-                    className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 hover:text-gray-900"
-                    role="menuitem"
-                  >
-                    {doc.id} <span>{doc.ref.path}</span>
-                  </a>
-                ))}
-              </div>
-            </ModalBody>
-          </HotKeys>
-        </Modal>
-      )}
-    </div>
+          {filteredDocs.map((doc) => (
+            <a
+              href="#"
+              key={doc.id}
+              className="block px-3 py-2 text-sm rounded-sm text-foreground hover:bg-accent"
+              role="menuitem"
+            >
+              {doc.id} <span>{doc.ref.path}</span>
+            </a>
+          ))}
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

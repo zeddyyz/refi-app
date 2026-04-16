@@ -23,7 +23,7 @@ const Property = () => {
   const currentPath = useRecoilValue(navigatorPathAtom);
   const doc = useRecoilValue(docAtom(currentPath));
   const [searchInput, setSearchInput] = useState("");
-  const [editorType, setEditorType] = useRecoilState(defaultEditorAtom);
+  const [editorType] = useRecoilState(defaultEditorAtom);
   const idInputRef = useRef<HTMLInputElement>(null);
 
   const handleCreateDocument = useCallback(() => {
@@ -118,10 +118,10 @@ const Property = () => {
         <div className="flex">
           <div
             className={classNames(
-              "w-8 p-1 text-center text-gray-700 border font-bold dark:text-gray-200 flex items-center justify-center bg-muted border-r-0 rounded-l-md",
+              "w-8 p-1 text-center text-foreground border font-bold flex items-center justify-center bg-muted border-r-0 rounded-l-md",
               {
-                ["border-gray-200 dark:border-gray-700"]: !doc.isNew,
-                ["border-gray-300 dark:border-gray-500"]: doc.isNew,
+                ["border-border"]: !doc.isNew,
+                ["border-primary"]: doc.isNew,
               }
             )}
           >
@@ -129,7 +129,7 @@ const Property = () => {
           </div>
           <ShadcnInput
             ref={idInputRef}
-            className="pr-6 font-mono disabled:text-gray-700 disabled:border-gray-200 dark:border-gray-700 dark:text-white h-8 rounded-l-none"
+            className="rounded-l-none h-8 font-mono pr-6 disabled:text-muted-foreground disabled:border-border text-foreground"
             placeholder="Document id"
             defaultValue={doc.id}
             disabled={!doc.isNew}
@@ -140,7 +140,7 @@ const Property = () => {
         {!doc.isNew && (
           <CopyIcon
             value={doc.id}
-            className="absolute w-6 transform -translate-y-1/2 bg-white opacity-0 cursor-pointer right-1 top-1/2 group-hover:opacity-100 p-0.5 rounded"
+            className="absolute w-6 transform -translate-y-1/2 bg-card opacity-0 cursor-pointer right-1 top-1/2 group-hover:opacity-100 p-0.5 rounded"
           />
         )}
       </div>
@@ -155,7 +155,7 @@ const Property = () => {
         ) : (
           <Tooltip delayDuration={100}>
             <TooltipTrigger asChild>
-              <a className="text-xs text-blue-500 cursor-pointer">
+              <a className="text-xs text-primary cursor-pointer">
                 <svg
                   className="inline-block w-4 mb-0.5"
                   xmlns="http://www.w3.org/2000/svg"
@@ -172,57 +172,13 @@ const Property = () => {
               </a>
             </TooltipTrigger>
             <TooltipContent side="top" align="start" className="max-w-2xl z-40">
-              <span className="dark:text-gray-200">
-                Type <code className="text-red-700 bg-gray-100 p-0.5">/</code>{" "}
+              <span className="text-foreground">
+                Type <code className="text-destructive bg-muted p-0.5">/</code>{" "}
                 to start insert new type
               </span>
             </TooltipContent>
           </Tooltip>
         )}
-        <div className="flex flex-row justify-self-end">
-          {/* <Button
-            size="small"
-            onClick={() => setEditorType("basic")}
-            isPrimary={editorType === "basic"}
-            className="px-1.5"
-          >
-            <svg
-              className="w-4"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h8m-8 6h16"
-              />
-            </svg>
-          </Button>
-          <Button
-            size="small"
-            onClick={() => setEditorType("advantage")}
-            isPrimary={editorType === "advantage"}
-            className="px-1.5"
-          >
-            <svg
-              className="w-4"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-              />
-            </svg>
-          </Button> */}
-        </div>
       </div>
       <div className="h-full max-h-full mt-2 overflow-auto">
         {editorType === "basic" && (

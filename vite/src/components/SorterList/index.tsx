@@ -39,7 +39,7 @@ const SorterItem = ({
       ref={provided.innerRef}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
-      className="flex flex-row items-center justify-between h-8 hover:bg-gray-200 p-1.5 group"
+      className="flex flex-row items-center justify-between h-8 hover:bg-accent p-1.5 group"
     >
       <div>
         <svg

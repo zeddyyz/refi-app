@@ -35,7 +35,6 @@ import {
   getSampleColumn,
   ignoreBackdropEvent,
 } from "@/utils/common";
-import { Cell } from "@zendeskgarden/react-tables";
 import classNames from "classnames";
 import { get, sumBy, throttle, uniqueId } from "lodash";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
@@ -192,7 +191,7 @@ function TableWrapper({
             },
             key: rowOrigin.id,
           })}
-          className="border-b border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-900 group dark:text-gray-200"
+          className="border-b border-border hover:bg-accent group text-foreground"
           data-id={rowOrigin.id}
           onClick={(e) => onRowClick(e, rowOrigin)}
         >
@@ -201,7 +200,7 @@ function TableWrapper({
               // eslint-disable-next-line react/jsx-key
               <div
                 {...cell.getCellProps()}
-                className="border-r border-gray-200 dark:border-gray-600 last:border-r-0 group-hover:border-gray-300"
+                className="border-r border-border last:border-r-0 group-hover:border-border"
                 cm-template="rowContext"
                 cm-id="rowContext"
                 cm-payload-id={rowOrigin.id}
@@ -249,7 +248,7 @@ function TableWrapper({
       {({ height, width }) => (
         <table
           {...getTableProps()}
-          className="w-full h-full border-b border-gray-300 dark:border-gray-600"
+          className="w-full h-full border-b border-border"
         >
           <thead>
             {headerGroups.map((headerGroup) => (
@@ -262,8 +261,7 @@ function TableWrapper({
                     minWidth: "unset",
                   },
 
-                  className:
-                    "border-t border-b border-gray-300 dark:border-gray-600",
+                  className: "border-t border-b border-border",
                 })}
                 ref={headerRef}
               >
@@ -273,14 +271,14 @@ function TableWrapper({
                     {...column.getHeaderProps(
                       (column as any).getSortByToggleProps()
                     )}
-                    className="text-left text-gray-500 border-r border-gray-200 dark:border-gray-600"
+                    className="text-left text-muted-foreground border-r border-border"
                   >
                     <div
                       {...(column as any).getResizerProps({
                         onClick: ignoreBackdropEvent,
                       })}
                       className={classNames(
-                        "w-px h-full inline-block transform translate-x-px hover:bg-gray-400 pl-1 absolute top-0 -right-px"
+                        "w-px h-full inline-block transform translate-x-px hover:bg-accent pl-1 absolute top-0 -right-px"
                       )}
                     />
                     {column.render("Header", {
@@ -391,7 +389,7 @@ function ColumnHeader({
       cm-payload-column={fieldPath}
       cm-id={fieldPath}
     >
-      <div className="font-semibold dark:text-gray-200 truncate dark:text-gray-100">
+      <div className="font-semibold text-foreground truncate">
         {fieldPath}
       </div>
       {isSorted && (
@@ -516,7 +514,7 @@ function DataTable() {
       {
         Header: () => (
           <div
-            className="flex justify-center w-5 h-full text-gray-400 cursor-pointer"
+            className="flex justify-center w-5 h-full text-muted-foreground cursor-pointer"
             role="presentation"
             onClick={() => actionToggleModalPickProperty(true)}
           >
@@ -681,7 +679,7 @@ function DataTable() {
   );
 
   return (
-    <div className="w-full h-full mt-2 border-l border-r border-gray-300 dark:border-gray-600">
+    <div className="w-full h-full mt-2 border-l border-r border-border">
       <TableWrapper
         columns={columnViewer}
         data={data}

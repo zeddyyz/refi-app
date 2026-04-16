@@ -1,16 +1,8 @@
 import { certs, certsQueryID } from "@/atoms/cert";
 import { emulatorConnection, emulatorProjectId } from "@/atoms/ui";
-import { ignoreBackdropEvent, toBase64 } from "@/utils/common";
-import { Anchor, Button } from "@zendeskgarden/react-buttons";
-import { FileUpload, Input } from "@zendeskgarden/react-forms";
-import {
-  Body,
-  Footer,
-  FooterItem,
-  Header,
-  Modal,
-} from "@zendeskgarden/react-modals";
+import { toBase64 } from "@/utils/common";
 import { Notification, Title } from "@zendeskgarden/react-notifications";
+import classNames from "classnames";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useHistory } from "react-router-dom";
@@ -19,8 +11,15 @@ import {
   useRecoilValueLoadable,
   useSetRecoilState,
 } from "recoil";
-import { Button as ShadcnButton } from "@/components/ui/button";
-import { Input as ShadcnInput } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const LoginPage: React.FC = () => {
   const userCertsLoadable = useRecoilValueLoadable(certs);
@@ -111,14 +110,13 @@ const LoginPage: React.FC = () => {
         <div
           key={cert.projectId}
           onDoubleClick={() => handleOpenConnection(cert.projectId)}
-          className="flex flex-row items-center justify-between p-4 cursor-pointer bg-gray-200 dark:bg-gray-900 dark:hover:bg-gray-700 hover:bg-gray-200 rounded-xl"
+          className="flex flex-row items-center justify-between p-4 cursor-pointer bg-muted hover:bg-accent rounded-xl"
         >
           <Title>{cert.projectId}</Title>
-          {/* TODO: Last access time */}
           <div className="flex flex-row items-center space-x-2">
             <button
-              role="button"
-              className="w-8 h-8 p-1"
+              type="button"
+              className="w-8 h-8 p-1 text-destructive hover:bg-accent rounded"
               onClick={() => setConfirm(cert.projectId)}
             >
               <svg
@@ -126,7 +124,7 @@ const LoginPage: React.FC = () => {
                 height="20"
                 viewBox="0 0 16 16"
                 xmlns="http://www.w3.org/2000/svg"
-                fill="red"
+                fill="currentColor"
               >
                 <path
                   fillRule="evenodd"
@@ -135,13 +133,13 @@ const LoginPage: React.FC = () => {
                 />
               </svg>
             </button>
-            <ShadcnButton
+            <Button
               onClick={() => handleOpenConnection(cert.projectId)}
               size="sm"
               className="rounded-full"
             >
               Connect
-            </ShadcnButton>
+            </Button>
           </div>
         </div>
       ));
@@ -163,53 +161,61 @@ const LoginPage: React.FC = () => {
           {notificationError && ErrorNotify}
         </div>
       </div>
-      <Modal
-        isAnimated={false}
-        isLarge
-        focusOnMount
-        // backdropProps={{ onClick: ignoreBackdropEvent }}
-        appendToNode={document.querySelector("#root") || undefined}
-      >
-        <Header>Choose your project</Header>
-        <Body className="p-4">
+      <Dialog open>
+        <DialogContent
+          className="max-w-2xl"
+          onInteractOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
+          <DialogHeader>
+            <DialogTitle>Choose your project</DialogTitle>
+          </DialogHeader>
           <div className="p-3 space-y-3">
             <Title>Connect to emulator</Title>
-            <div className="flex flex-row items-center justify-between space-x-2 cursor-pointer">
-              <ShadcnInput
+            <div className="flex flex-row items-center justify-between space-x-2">
+              <Input
                 value={projectValue}
                 onChange={(e) => setProjectValue(e.target.value)}
                 className="h-8"
                 placeholder="example-project"
               />
-              <ShadcnInput
+              <Input
                 value={connection}
                 onChange={(e) => setConnection(e.target.value)}
                 className="h-8"
                 placeholder="127.0.0.1:8080"
               />
-              {/* TODO: Last access time */}
               <div className="flex flex-row items-center space-x-2">
-                <ShadcnButton
+                <Button
                   onClick={handleConnectLocal}
                   size="sm"
                   className="rounded-full"
                 >
                   Connect
-                </ShadcnButton>
+                </Button>
               </div>
             </div>
-            <hr />
+            <hr className="border-border" />
             {listCerts}
-            <FileUpload {...getRootProps()} isDragging={isDragActive}>
+            <div
+              {...getRootProps()}
+              className={classNames(
+                "flex items-center justify-center border-2 border-dashed rounded-md p-6 text-center cursor-pointer text-muted-foreground",
+                {
+                  "border-primary bg-accent": isDragActive,
+                  "border-border hover:bg-accent": !isDragActive,
+                }
+              )}
+            >
               {isDragActive ? (
                 <span>Drop files here</span>
               ) : (
                 <span>Choose a credential file or drag and drop here</span>
               )}
-              <ShadcnInput {...getInputProps()} />
-            </FileUpload>
+              <input {...getInputProps()} />
+            </div>
             <div>
-              <ShadcnButton
+              <Button
                 variant="link"
                 className="pt-2 text-sm p-0 h-auto"
                 onClick={() =>
@@ -219,40 +225,37 @@ const LoginPage: React.FC = () => {
                 }
               >
                 I don&apos;t know how to get credential file
-              </ShadcnButton>
+              </Button>
             </div>
           </div>
-        </Body>
-      </Modal>
+        </DialogContent>
+      </Dialog>
 
-      {showConfirm && (
-        <Modal
-          onClose={() => setConfirm("")}
-          isAnimated={false}
-          appendToNode={document.querySelector("#root") || undefined}
-        >
-          <Header>Remove project {showConfirm}</Header>
-          <Body className="p-4">
+      <Dialog
+        open={!!showConfirm}
+        onOpenChange={(open) => !open && setConfirm("")}
+      >
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Remove project {showConfirm}</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
             Remove this project will erase all its settings and credential
-          </Body>
-          <Footer className="p-4">
-            <FooterItem>
-              <ShadcnButton onClick={() => setConfirm("")} size="sm" variant="outline">
-                Cancel
-              </ShadcnButton>
-            </FooterItem>
-            <FooterItem>
-              <ShadcnButton
-                variant="destructive"
-                size="sm"
-                onClick={() => handleDeleteCert(showConfirm)}
-              >
-                Remove
-              </ShadcnButton>
-            </FooterItem>
-          </Footer>
-        </Modal>
-      )}
+          </p>
+          <DialogFooter>
+            <Button onClick={() => setConfirm("")} size="sm" variant="outline">
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => handleDeleteCert(showConfirm)}
+            >
+              Remove
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

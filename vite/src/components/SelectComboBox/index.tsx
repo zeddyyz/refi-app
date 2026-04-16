@@ -1,4 +1,4 @@
-import { Input } from "@zendeskgarden/react-forms";
+import { Input } from "@/components/ui/input";
 import classNames from "classnames";
 import { useCombobox } from "downshift";
 import React, { ReactElement, useMemo, useRef, useState } from "react";
@@ -68,9 +68,8 @@ const SelectComboBox = ({
           {...getInputProps({
             onBlur: handleInputBlur,
             ref: inputWrapperRef,
-            className: "pr-4 truncate",
+            className: "pr-4 truncate h-7 text-sm",
           })}
-          isCompact
         />
         <button
           type="button"
@@ -79,7 +78,7 @@ const SelectComboBox = ({
           className="absolute transform -translate-y-1/2 top-1/2 right-1"
         >
           <svg
-            className="w-4 text-gray-500"
+            className="w-4 text-muted-foreground"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -97,7 +96,7 @@ const SelectComboBox = ({
       <ul
         {...getMenuProps({ ref: menuRef, style: { minWidth: "100px" } })}
         className={classNames(
-          "absolute z-20 opacity-0 pointer-events-none max-w-md w-auto overflow-y-auto bg-white border border-gray-300 shadow-md max-h-64 top-8",
+          "absolute z-20 opacity-0 pointer-events-none max-w-md w-auto overflow-y-auto bg-popover text-popover-foreground border border-border shadow-md max-h-64 top-8",
           {
             "opacity-100 pointer-events-auto": isOpen,
           }
@@ -108,7 +107,7 @@ const SelectComboBox = ({
             key={`${item}${index}`}
             {...getItemProps({ item, index })}
             className={classNames("h-7 p-1 truncate cursor-pointer", {
-              ["bg-blue-200"]: highlightedIndex === index,
+              ["bg-accent text-accent-foreground"]: highlightedIndex === index,
             })}
           >
             {item}

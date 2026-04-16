@@ -7,7 +7,7 @@ import {
   getPathEntities,
   getProjectId,
 } from "@/utils/common";
-import { Input } from "@zendeskgarden/react-forms";
+import { Input } from "@/components/ui/input";
 import React, {
   ChangeEvent,
   KeyboardEvent,
@@ -127,11 +127,10 @@ function PathInput() {
       ) : (
         <Input
           ref={inputRef}
-          isCompact
           value={pathInput}
           onChange={handleChangeValue}
           onKeyDown={handlePathChange}
-          className="pr-8 bg-card border-0 h-7 focus:ring-0"
+          className="pr-8 bg-card border-0 h-7 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
           onBlur={() => toggleViewMode(true)}
         />
       )}

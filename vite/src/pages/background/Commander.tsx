@@ -1,11 +1,9 @@
 import { globalHotKeysHandler } from "@/atoms/hotkeys";
 import { isModalCommandAtom } from "@/atoms/ui";
-import EscExit from "@/components/EscExit";
 import ListOptions from "@/components/ListOptions";
 import ShortcutKey from "@/components/ShortcutKey";
-import { useFocusJail } from "@zendeskgarden/container-focusjail";
-import { Input } from "@zendeskgarden/react-forms";
-import { Body as ModalBody, Modal } from "@zendeskgarden/react-modals";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import classNames from "classnames";
 import React, {
   useCallback,
@@ -15,7 +13,7 @@ import React, {
   useState,
 } from "react";
 import { getApplicationKeyMap } from "react-hotkeys";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 
 interface ICommand {
   name: string;
@@ -38,8 +36,8 @@ const CommandOption = ({
     href="#"
     key={command.name}
     className={classNames(
-      "flex flex-row justify-between px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 hover:text-gray-900",
-      { ["bg-gray-200"]: isActive }
+      "flex flex-row justify-between px-3 py-2 text-sm rounded-sm text-foreground hover:bg-accent",
+      { ["bg-accent"]: isActive }
     )}
     role="menuitem"
     onClick={(e) => {
@@ -138,45 +136,37 @@ const Commander = () => {
   // TODO: Add a section for recent commands
 
   return (
-    <div>
-      <EscExit onExit={() => setShowModalCommand(false)}>
-        <Modal
-          isAnimated={false}
-          isLarge
-          focusOnMount
-          backdropProps={{
-            onClick: () => setShowModalCommand(false),
-            className: "justify-center",
-          }}
-          isCentered={false}
+    <Dialog
+      open={true}
+      onOpenChange={(open) => !open && setShowModalCommand(false)}
+    >
+      <DialogContent className="max-w-lg p-0 gap-0 overflow-hidden">
+        <div className="p-3 border-b border-border">
+          <Input
+            placeholder="Commit changes, preview changes,... anything in your head 🤓"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            onKeyDown={handleInputKeyDown}
+            ref={inputRef}
+            autoFocus
+            className="h-9"
+            tabIndex={1}
+          />
+        </div>
+        <div
+          className="max-h-80 overflow-auto p-1"
+          role="menu"
+          aria-orientation="vertical"
+          aria-labelledby="options-menu"
         >
-          <ModalBody className="p-3">
-            <div
-              className="py-1 mt-2 rounded"
-              role="menu"
-              aria-orientation="vertical"
-              aria-labelledby="options-menu"
-            >
-              <Input
-                placeholder="Commit changes, preview changes,... anything in your head 🤓"
-                value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
-                onKeyDown={handleInputKeyDown}
-                ref={inputRef}
-                autoFocus
-                className="px-3 mb-1"
-                tabIndex={1}
-              />
-              <ListOptions
-                options={options}
-                onChange={onSelectOption}
-                currentOption={currentOption?.key || "general"}
-              />
-            </div>
-          </ModalBody>
-        </Modal>
-      </EscExit>
-    </div>
+          <ListOptions
+            options={options}
+            onChange={onSelectOption}
+            currentOption={currentOption?.key || "general"}
+          />
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

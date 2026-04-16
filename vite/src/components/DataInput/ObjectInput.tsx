@@ -27,10 +27,10 @@ const ObjectInput = ({ fieldPath, toggleExpand }: IObjectInputProps) => {
     <div className="p-0.5">
       <button
         role="button"
-        className="flex flex-row items-center justify-center p-1 text-xs bg-white border border-gray-300"
+        className="flex flex-row items-center justify-center p-1 text-xs bg-card border border-border"
         onClick={() => handleAddProperty()}
       >
-        <div className="inline-block w-4 mr-1 text-green-500">
+        <div className="inline-block w-4 mr-1 text-muted-foreground">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
