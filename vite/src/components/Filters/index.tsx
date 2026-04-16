@@ -149,15 +149,15 @@ const Filters = () => {
       ))}
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <Button size="sm" onClick={handleAddFilter} className="px-3 h-7">
+          <Button size="sm" onClick={handleAddFilter} className="px-3 h-7 bg-secondary">
             Add Filters
           </Button>
           <Popover open={isShowPropertyList} onOpenChange={setShowPropertyList}>
             <PopoverTrigger asChild>
               <Button
                 size="sm"
-                className={classNames("px-3 h-7", {
-                  "bg-primary/80": isShowPropertyList,
+                className={classNames("px-3 h-7 bg-secondary", {
+                  "bg-secondary": isShowPropertyList,
                 })}
               >
                 Properties
