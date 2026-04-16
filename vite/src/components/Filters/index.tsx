@@ -146,13 +146,13 @@ const Filters = () => {
   }, []);
 
   return (
-    <div className="space-y-2">
+    <div className="px-3 py-2 bg-card border-b border-border space-y-2">
       {queryOptions.map((filter) => (
         <FilterItem key={filter.id} id={filter.id}></FilterItem>
       ))}
-      <div className="flex justify-between">
-        <div className="space-x-2">
-          <Button size="small" onClick={handleAddFilter}>
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <Button size="small" onClick={handleAddFilter} className="px-3">
             Add Filters
           </Button>
           <Button
@@ -161,7 +161,9 @@ const Filters = () => {
             onClick={() => {
               setShowPropertyList(true);
             }}
-            className={isShowPropertyList ? "bg-blue-100" : ""}
+            className={classNames("px-3", {
+              "bg-blue-100": isShowPropertyList,
+            })}
           >
             Properties
           </Button>
@@ -199,12 +201,12 @@ const Filters = () => {
             <SorterList />
           </TooltipModal>
         </div>
-        <div className="flex flex-row items-center space-x-2">
-          <div className="flex flex-row items-center">
-            <div className="space-x-1 text-sm">
-              <strong>{totalDocs}</strong> document(s)
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 px-2 text-sm text-muted-foreground">
+            <div className="text-sm">
+              <strong className="text-foreground">{totalDocs}</strong> document(s)
             </div>
-            <div className="flex flex-row items-center space-x-1">
+            <div className="flex items-center gap-1">
               <PreviousButton />
               <NextButton />
             </div>
@@ -228,11 +230,12 @@ const Filters = () => {
             <Button
               size="small"
               onClick={() => actionNewDocument(collectionPath)}
+              className="px-3"
             >
               New document
             </Button>
           </Tooltip>
-          <div className="flex flex-row">
+          <div className="flex items-center">
             <Tooltip
               placement="bottom"
               appendToNode={document.body}
@@ -253,6 +256,7 @@ const Filters = () => {
                 size="small"
                 isPrimary
                 onClick={() => actionSubmitQuery(true)}
+                className="px-3"
               >
                 Query
               </Button>

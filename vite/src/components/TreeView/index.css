@@ -14,7 +14,7 @@
   outline: 0;
 }
 .rc-tree .rc-tree-treenode .draggable {
-  color: #333;
+  color: inherit;
   -moz-user-select: none;
   -khtml-user-select: none;
   -webkit-user-select: none;
@@ -164,7 +164,7 @@
 }
 
 .rc-tree-treenode-selected {
-  @apply bg-gray-300 dark:bg-gray-800 !important;
+  @apply bg-accent text-accent-foreground !important;
 }
 
 .rc-tree-icon__open {
@@ -199,6 +199,10 @@
   display: inline-block;
 }
 
+.rc-tree-list-holder {
+  overflow-x: auto;
+}
+
 .rc-tree-list-holder > div {
   overflow-x: auto !important;
   height: 100%;
@@ -208,4 +212,9 @@
   position: relative !important;
   display: inline-flex !important;
   min-width: 100%;
+}
+
+.rc-tree .rc-tree-treenode .rc-tree-node-content-wrapper,
+.rc-tree .rc-tree-title {
+  white-space: nowrap;
 }

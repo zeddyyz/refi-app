@@ -52,8 +52,8 @@ const NavBar = () => {
   }, [isCommittable]);
 
   return (
-    <div className="flex flex-row space-x-2">
-      <div className="flex flex-row space-x-2">
+    <div className="flex flex-row items-center gap-2 h-10 px-3 w-full">
+      <div className="flex flex-row items-center gap-2">
         <Tooltip delayDuration={100}>
           <TooltipTrigger asChild>
             <ShadcnButton
@@ -61,7 +61,7 @@ const NavBar = () => {
               variant="outline"
               onClick={() => setShowChangeModal(true)}
               disabled={!isCommittable}
-              className="dark:text-white"
+              className="h-7 px-3 dark:text-white"
             >
               Preview changes
             </ShadcnButton>
@@ -79,7 +79,7 @@ const NavBar = () => {
               size="sm"
               disabled={!isCommittable}
               onClick={actionCommitChange}
-              className="dark:text-white"
+              className="h-7 px-3 dark:text-white"
             >
               Commit
             </ShadcnButton>
@@ -96,25 +96,23 @@ const NavBar = () => {
             <ShadcnButton
               variant="ghost"
               size="icon"
-              className="rounded-full"
+              className="h-7 w-7 rounded-full"
               onClick={actionReverseChange}
             >
-              <div className="w-5 dark:text-gray-200">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  className="dark:text-white"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                  />
-                </svg>
-              </div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                className="w-4 h-4"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
             </ShadcnButton>
           </TooltipTrigger>
           <TooltipContent side="bottom" className="z-50 max-w-2xl p-2">
@@ -126,8 +124,7 @@ const NavBar = () => {
           </TooltipContent>
         </Tooltip>
       </div>
-      <div className="w-px h-full" />
-      <div className="w-full">
+      <div className="flex-1 min-w-0">
         <PathInput />
       </div>
     </div>

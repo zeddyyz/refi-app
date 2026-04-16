@@ -60,7 +60,7 @@ const NodeComponent = ({ path, name, isCollection }: IFSDataNode) => {
 
   return (
     <span
-      className={classNames("dark:text-gray-100", {
+      className={classNames("text-foreground whitespace-nowrap", {
         ["text-green-600"]: doc?.isNew,
         ["text-blue-600"]: doc?.isChanged(),
         ["font-mono text-xs"]: !isCollection,
@@ -97,8 +97,7 @@ function buildTree(
       title: (props) => <NodeComponent {...props} />,
       children: [],
       isCollection: isCollection,
-      className:
-        "hover:bg-gray-200 cursor-pointer dark:hover:bg-gray-800 dark:text-white",
+      className: "hover:bg-accent cursor-pointer text-foreground",
       props: {
         onClick: (e) => {
           if (e.target?.getAttribute("role") !== "expander") {
@@ -271,7 +270,7 @@ const NewCollectionInput = ({ path, onChange }: INewCollectionInputProps) => {
       ref={inputRef}
       tabIndex={2}
       onFocus={handleFocus}
-      className="w-auto p-0.5 min-h border border-gray-300 h-6 focus:border-blue-400 text-sm outline-none"
+      className="w-auto p-0.5 min-h border border-border bg-background text-foreground h-6 focus:border-primary text-sm outline-none rounded"
     />
   );
 };
@@ -489,7 +488,7 @@ function TreeView({ allDocs, deletedDocs, pathAvailable }: ITreeViewProps) {
         isCompact
         value={searchInput}
         onChange={(e) => setSearchInput(e.target.value)}
-        className="dark:bg-gray-900"
+        className="bg-background border-border"
       />
       <div
         className="flex flex-col h-full mt-2"
@@ -497,11 +496,11 @@ function TreeView({ allDocs, deletedDocs, pathAvailable }: ITreeViewProps) {
         ref={treeWrapperRef}
         onFocus={handleOnFocus}
       >
-        <div className="flex h-8 flex-row items-center justify-between pl-1.5 bg-gray-200 dark:bg-gray-900 border-b-2 border-gray-400">
-          <span>{getProjectId()}</span>
+        <div className="flex h-8 flex-row items-center justify-between pl-2 bg-card border-b border-border">
+          <span className="text-sm font-medium text-foreground truncate">{getProjectId()}</span>
 
           <button
-            className="h-full px-1.5 hover:bg-gray-400"
+            className="h-full px-2 hover:bg-accent text-muted-foreground hover:text-foreground"
             role="button"
             onClick={() => handleAddCollection("")}
           >
@@ -520,7 +519,7 @@ function TreeView({ allDocs, deletedDocs, pathAvailable }: ITreeViewProps) {
             </svg>
           </button>
         </div>
-        <div className="w-full h-full dark:bg-gray-900">
+        <div className="w-full h-full bg-card min-w-0 overflow-x-auto">
           <AutoSizer disableWidth>
             {({ height }) => (
               <Tree

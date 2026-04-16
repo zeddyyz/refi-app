@@ -8,62 +8,20 @@ import Property from "@/components/Property";
 import QuoteLoading from "@/components/QuoteLoading";
 import TreeView from "@/components/TreeView";
 import URLSynchronizer from "@/components/URLSynchronizer";
-import React, { ReactElement, useEffect, useMemo, useState } from "react";
-import RGL, { WidthProvider } from "react-grid-layout";
+import React, { ReactElement, useEffect, useState } from "react";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { useHistory, useParams } from "react-router-dom";
-import AutoSizer from "react-virtualized-auto-sizer";
 import Background from "../background";
 import UniversalHotKey from "../hotkey";
 import Main from "./main";
 
-const ReactGridLayout = WidthProvider(RGL);
+const RESIZE_HANDLE_CLASS =
+  "w-px bg-border relative hover:bg-primary/40 data-[resize-handle-state=drag]:bg-primary/60 transition-colors after:absolute after:inset-y-0 after:-left-1 after:-right-1 after:content-['']";
 
-interface IMainLayoutProps {
-  size: {
-    width: number;
-    height: number;
-  };
-}
-
-const BASE_HEIGHT = 32;
-const BASE_SPACE = 16;
-
-function MainLayout({ size }: IMainLayoutProps): ReactElement {
+function MainLayout(): ReactElement {
   const history = useHistory();
   const { projectId } = useParams() as any;
   const [showLoading, setShowLoading] = useState(true);
-  const layout = useMemo(() => {
-    // remainHeight = Screen height - Nav height - Footer height
-    const remainHeight = size.height - (BASE_HEIGHT + BASE_SPACE * 2) - 16;
-
-    // Height = BASE_HEIGHT*x + (x-1)*BASE_SPACE = BASE_HEIGHT*x + BASE_SPACE*X - BASE_SPACE. It's MATH
-    const remainSpace =
-      (remainHeight - BASE_SPACE) / (BASE_HEIGHT + BASE_SPACE);
-    return [
-      { i: "nav-bar", x: 0, y: 0, w: 12, h: 1 },
-      {
-        i: "sidebar",
-        x: 0,
-        y: 0,
-        w: 2,
-        h: remainSpace - 1,
-      },
-      {
-        i: "main",
-        x: 2,
-        y: 0,
-        w: 7,
-        h: remainSpace - 1,
-      },
-      {
-        i: "property",
-        x: 10,
-        y: 0,
-        w: 3,
-        h: remainSpace - 1,
-      },
-    ];
-  }, [size.height]);
 
   useEffect(() => {
     setRecoilExternalState(projectIdAtom, projectId);
@@ -84,54 +42,45 @@ function MainLayout({ size }: IMainLayoutProps): ReactElement {
   }, []);
 
   return (
-    <div className="w-screen h-screen">
+    <div className="flex flex-col h-screen w-screen bg-background text-foreground">
       {showLoading ? (
         <QuoteLoading onDone={() => setShowLoading(false)} />
       ) : (
         <>
-          <div>
-            <UniversalHotKey />
-            <DataSubscriber />
-            <URLSynchronizer />
-            <ReactGridLayout
-              className="transition-none layout"
-              layout={layout}
-              cols={12}
-              rowHeight={BASE_HEIGHT}
-              autoSize={true}
-              margin={[BASE_SPACE, BASE_SPACE]}
-              isDraggable={false}
-              isResizable={false}
-            >
-              <div key="nav-bar" className="z-30">
-                <NavBar />
-              </div>
-              <div key="sidebar">
+          <UniversalHotKey />
+          <DataSubscriber />
+          <URLSynchronizer />
+          <div className="shrink-0 border-b border-border bg-background">
+            <NavBar />
+          </div>
+          <PanelGroup
+            direction="horizontal"
+            autoSaveId="refi-main-layout"
+            className="flex-1 min-h-0"
+          >
+            <Panel id="sidebar" defaultSize={18} minSize={12} order={1}>
+              <div className="h-full w-full overflow-hidden bg-card">
                 <TreeView />
               </div>
-              <div key="main">
+            </Panel>
+            <PanelResizeHandle className={RESIZE_HANDLE_CLASS} />
+            <Panel id="main" defaultSize={54} minSize={30} order={2}>
+              <div className="h-full w-full overflow-hidden bg-card">
                 <Main />
               </div>
-              <div key="property">
+            </Panel>
+            <PanelResizeHandle className={RESIZE_HANDLE_CLASS} />
+            <Panel id="property" defaultSize={28} minSize={18} order={3}>
+              <div className="h-full w-full overflow-hidden bg-card">
                 <Property />
               </div>
-            </ReactGridLayout>
-            <Background />
-          </div>
+            </Panel>
+          </PanelGroup>
+          <Background />
         </>
       )}
     </div>
   );
 }
 
-const MainWithSize = () => {
-  return (
-    <div className="w-screen h-screen bg-background text-foreground">
-      <AutoSizer>
-        {({ height, width }) => <MainLayout size={{ width, height }} />}
-      </AutoSizer>
-    </div>
-  );
-};
-
-export default MainWithSize;
+export default MainLayout;
