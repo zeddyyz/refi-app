@@ -12,7 +12,11 @@ import { globalHotKeys } from "@/atoms/hotkeys";
 import { isShowPreviewChangeModalAtom } from "@/atoms/ui";
 import PathInput from "@/components/PathInput";
 import { Button as ShadcnButton } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import React, { useEffect, useState } from "react";
 import { useRecoilCallback, useSetRecoilState } from "recoil";
 import ShortcutKey from "../ShortcutKey";
@@ -52,16 +56,15 @@ const NavBar = () => {
   }, [isCommittable]);
 
   return (
-    <div className="flex flex-row items-center gap-2 h-10 px-3 w-full">
+    <div className="flex flex-row items-center gap-2 h-12 px-3 w-full">
       <div className="flex flex-row items-center gap-2">
         <Tooltip delayDuration={100}>
           <TooltipTrigger asChild>
             <ShadcnButton
               size="sm"
-              variant="outline"
               onClick={() => setShowChangeModal(true)}
               disabled={!isCommittable}
-              className="h-7 px-3 dark:text-white"
+              className="h-7 px-3"
             >
               Preview changes
             </ShadcnButton>
@@ -79,7 +82,7 @@ const NavBar = () => {
               size="sm"
               disabled={!isCommittable}
               onClick={actionCommitChange}
-              className="h-7 px-3 dark:text-white"
+              className="h-7 px-3"
             >
               Commit
             </ShadcnButton>

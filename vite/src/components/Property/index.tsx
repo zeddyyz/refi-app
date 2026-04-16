@@ -114,37 +114,39 @@ const Property = () => {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="relative group">
-        <div className="flex">
-          <div
-            className={classNames(
-              "w-8 p-1 text-center text-foreground border font-bold flex items-center justify-center bg-muted border-r-0 rounded-l-md",
-              {
-                ["border-border"]: !doc.isNew,
-                ["border-primary"]: doc.isNew,
-              }
-            )}
-          >
-            _id
+      <div className="px-3 py-2 border-b border-border">
+        <div className="relative group">
+          <div className="flex">
+            <div
+              className={classNames(
+                "w-8 h-7 text-center text-foreground border font-bold flex items-center justify-center bg-muted border-r-0 rounded-l-md text-xs",
+                {
+                  ["border-border"]: !doc.isNew,
+                  ["border-primary"]: doc.isNew,
+                }
+              )}
+            >
+              _id
+            </div>
+            <ShadcnInput
+              ref={idInputRef}
+              className="rounded-l-none h-7 font-mono text-sm pr-6 disabled:text-muted-foreground disabled:border-border text-foreground"
+              placeholder="Document id"
+              defaultValue={doc.id}
+              disabled={!doc.isNew}
+              onBlur={(e) => handleOnChangeId(e.target.value)}
+              onKeyDown={onIdKeyDown}
+            />
           </div>
-          <ShadcnInput
-            ref={idInputRef}
-            className="rounded-l-none h-8 font-mono pr-6 disabled:text-muted-foreground disabled:border-border text-foreground"
-            placeholder="Document id"
-            defaultValue={doc.id}
-            disabled={!doc.isNew}
-            onBlur={(e) => handleOnChangeId(e.target.value)}
-            onKeyDown={onIdKeyDown}
-          />
+          {!doc.isNew && (
+            <CopyIcon
+              value={doc.id}
+              className="absolute w-6 transform -translate-y-1/2 bg-card opacity-0 cursor-pointer right-1 top-1/2 group-hover:opacity-100 p-0.5 rounded"
+            />
+          )}
         </div>
-        {!doc.isNew && (
-          <CopyIcon
-            value={doc.id}
-            className="absolute w-6 transform -translate-y-1/2 bg-card opacity-0 cursor-pointer right-1 top-1/2 group-hover:opacity-100 p-0.5 rounded"
-          />
-        )}
       </div>
-      <div className="flex flex-row items-center justify-between mt-3">
+      <div className="flex flex-row items-center justify-between mt-3 px-3">
         {editorType === "basic" ? (
           <ShadcnInput
             placeholder="Search for property or value..."
@@ -180,7 +182,7 @@ const Property = () => {
           </Tooltip>
         )}
       </div>
-      <div className="h-full max-h-full mt-2 overflow-auto">
+      <div className="h-full max-h-full mt-2 px-3 pb-3 overflow-auto">
         {editorType === "basic" && (
           <PropertyTable searchInput={searchInput} doc={doc} />
         )}

@@ -270,7 +270,7 @@ const NewCollectionInput = ({ path, onChange }: INewCollectionInputProps) => {
       ref={inputRef}
       tabIndex={2}
       onFocus={handleFocus}
-      className="w-auto p-0.5 min-h border border-border bg-background text-foreground h-6 focus:border-primary text-sm outline-none rounded"
+      className="w-auto p-0.5 min-h border border-border bg-card text-foreground h-6 focus:border-primary text-sm outline-none rounded"
     />
   );
 };
@@ -483,14 +483,16 @@ function TreeView({ allDocs, deletedDocs, pathAvailable }: ITreeViewProps) {
 
   return (
     <div className="flex flex-col h-full">
-      <Input
-        placeholder="Search for item..."
-        value={searchInput}
-        onChange={(e) => setSearchInput(e.target.value)}
-        className="bg-background border-border h-7 text-sm rounded-none border-x-0 border-t-0"
-      />
+      <div className="px-3 py-2 border-b border-border">
+        <Input
+          placeholder="Search for item..."
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          className="bg-card border-border h-7 text-sm"
+        />
+      </div>
       <div
-        className="flex flex-col h-full mt-2"
+        className="flex flex-col h-full"
         tabIndex={1}
         ref={treeWrapperRef}
         onFocus={handleOnFocus}
