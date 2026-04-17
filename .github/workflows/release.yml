@@ -21,7 +21,7 @@ jobs:
           cache: "yarn"
           cache-dependency-path: vite/yarn.lock
       - name: Install tree lib
-        run: cd tree && npm install --legacy-peer-deps && npm install --no-save @types/minimatch@5
+        run: cd tree && npm install --legacy-peer-deps && npm install --legacy-peer-deps --no-save @types/minimatch@5
       - name: Build tree lib
         run: cd tree && npm run compile
       - name: Install Vite deps
