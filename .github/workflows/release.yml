@@ -1,87 +1,73 @@
-name: Build
+name: Release
+
 on:
   push:
-    branches:
-      - main
+    tags:
+      - "v*"
+  workflow_dispatch:
 
 env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
 jobs:
   build-vite:
-    # needs: build-packages
+    name: Build frontend (Vite)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "14"
+          node-version: "16"
           cache: "yarn"
           cache-dependency-path: |
             vite/yarn.lock
             tree/yarn.lock
-      - name: Install lib tree
-        run: cd tree && yarn
-      - name: Build lib tree
-        run: cd tree && yarn run compile
-      - name: Install Vite package
-        run: cd vite && yarn
+      - name: Install tree lib
+        run: cd tree && yarn --frozen-lockfile
+      - name: Build tree lib
+        run: cd tree && yarn compile
+      - name: Install Vite deps
+        run: cd vite && yarn --frozen-lockfile
       - name: Build Vite
-        run: cd vite && yarn run build
-      - name: "Upload Artifact"
-        uses: actions/upload-artifact@v2
+        run: cd vite && yarn build
+      - name: Upload vite artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: vite
+          name: vite-dist
           path: vite/dist
           retention-days: 1
 
-  release-macos:
+  release:
+    name: Package ${{ matrix.os }}
     needs: build-vite
-    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     env:
+      # macOS signing (set these repo secrets once you have an Apple Developer cert)
       CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
       CSC_LINK: ${{ secrets.CSC_LINK }}
       APPLEID: ${{ secrets.APPLEID }}
       APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      # Windows signing
+      WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
+      WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@master
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 14
-      - name: Install Server package
-        run: cd server && yarn
-      - name: Download built Vite files
-        uses: actions/download-artifact@v2
+          node-version: "16"
+      - name: Install server deps
+        run: cd server && yarn --frozen-lockfile
+      - name: Compile server TS
+        run: cd server && yarn build-ts
+      - name: Download Vite artifact into server/build
+        uses: actions/download-artifact@v4
         with:
-          name: vite
+          name: vite-dist
           path: server/build
-      - name: Build app
-        run: cd server && ./node_modules/.bin/electron-builder -p always
-      # - name: "Upload Artifact"
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: Upload build file
-      #     path: server/dist
-      #     retention-days: 1
-
-  release-linux-window:
-    needs: build-vite
-    runs-on: ubuntu-18.04
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install wine
-        run: |
-          sudo dpkg --add-architecture i386
-          wget -qO - https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add -
-          sudo add-apt-repository ppa:cybermax-dexter/sdl2-backport
-          sudo apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu $(lsb_release -cs) main"
-          sudo apt install --install-recommends winehq-stable
-      - name: Install Server package
-        run: cd server && yarn
-      - name: Download built Vite files
-        uses: actions/download-artifact@v2
-        with:
-          name: vite
-          path: server/build
-      - name: Build app
-        run: cd server && ./node_modules/.bin/electron-builder -wl -p always
+      - name: Build & publish installer
+        run: cd server && npx electron-builder --publish always
