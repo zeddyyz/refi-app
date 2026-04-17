@@ -143,7 +143,7 @@ const Filters = () => {
   }, []);
 
   return (
-    <div className="px-3 py-2 border-b border-border space-y-2 bg-background">
+    <div className="px-3 py-2 space-y-2 bg-background">
       {queryOptions.map((filter) => (
         <FilterItem key={filter.id} id={filter.id}></FilterItem>
       ))}

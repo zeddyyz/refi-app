@@ -1,9 +1,8 @@
 import { buildFSUrl, fieldAtom, fieldChangedAtom } from "@/atoms/firestore";
-import { navigatorPathAtom } from "@/atoms/navigator";
 import { actionGoTo } from "@/atoms/navigator.action";
 import { useContextMenu } from "@/hooks/contextMenu";
 import { ClientDocumentSnapshot } from "@/types/ClientDocumentSnapshot";
-import { getPathEntities, isNumeric } from "@/utils/common";
+import { isNumeric } from "@/utils/common";
 import { getFireStoreType } from "@/utils/simplifr";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -257,9 +256,6 @@ export const IDReadOnlyField = ({
   children,
   isNew = false,
 }: IIDReadonlyCell) => {
-  const currentPath = useRecoilValue(navigatorPathAtom);
-  const isActive = value === getPathEntities(currentPath).pop();
-
   if (children) {
     return <div className="w-full h-full px-px">{children}</div>;
   }
@@ -270,7 +266,6 @@ export const IDReadOnlyField = ({
         className={classNames(
           "focus:ring-1 focus:ring-ring w-full h-full bg-transparent outline-none ring-inset focus:bg-accent p-1.5 text-foreground font-mono text-sm",
           {
-            ["pl-0.5 border-l-4 border-primary"]: isActive,
             ["bg-status-new"]: isNew,
           }
         )}

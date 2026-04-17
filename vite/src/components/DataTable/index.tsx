@@ -104,6 +104,9 @@ function TableWrapper({
 
   const tableState = state as any;
 
+  const currentPath = useRecoilValue(navigatorPathAtom);
+  const selectedId = getIdFromPath(currentPath);
+
   const listRef = useRef();
   const headerRef = useRef<HTMLDivElement>(null);
   const newestDocRef = useRef<undefined | ClientDocumentSnapshot>(undefined);
@@ -178,9 +181,11 @@ function TableWrapper({
 
   const RenderRow = useCallback(
     ({ data, index, style }) => {
-      const row = data[index];
+      const { rows: itemRows, selectedId: itemSelectedId } = data;
+      const row = itemRows[index];
       prepareRow(row);
       const rowOrigin = row.original as ClientDocumentSnapshot;
+      const isSelected = rowOrigin.id === itemSelectedId;
       return (
         <div
           {...row.getRowProps({
@@ -191,8 +196,14 @@ function TableWrapper({
             },
             key: rowOrigin.id,
           })}
-          className="border-b border-border hover:bg-accent group text-foreground"
+          className={classNames(
+            "border-b border-border hover:bg-accent group text-foreground",
+            {
+              ["bg-accent"]: isSelected,
+            }
+          )}
           data-id={rowOrigin.id}
+          aria-selected={isSelected}
           onClick={(e) => onRowClick(e, rowOrigin)}
         >
           {row.cells.map((cell) => {
@@ -245,89 +256,93 @@ function TableWrapper({
 
   return (
     <AutoSizer>
-      {({ height, width }) => (
-        <table
-          {...getTableProps()}
-          className="w-full h-full border-b border-border"
-        >
-          <thead>
-            {headerGroups.map((headerGroup) => (
-              // eslint-disable-next-line react/jsx-key
-              <div
-                {...headerGroup.getHeaderGroupProps({
-                  style: {
-                    width,
-                    overflow: "hidden",
-                    minWidth: "unset",
-                  },
+      {({ height, width }) => {
+        const HEADER_HEIGHT = 34;
+        return (
+          <table
+            {...getTableProps()}
+            className="w-full h-full border-b border-border block"
+          >
+            <thead className="block">
+              {headerGroups.map((headerGroup) => (
+                // eslint-disable-next-line react/jsx-key
+                <div
+                  {...headerGroup.getHeaderGroupProps({
+                    style: {
+                      width,
+                      height: HEADER_HEIGHT,
+                      overflow: "hidden",
+                      minWidth: "unset",
+                    },
 
-                  className: "border-t border-b border-border",
-                })}
-                ref={headerRef}
-              >
-                {headerGroup.headers.map((column) => (
-                  // eslint-disable-next-line react/jsx-key
-                  <th
-                    {...column.getHeaderProps(
-                      (column as any).getSortByToggleProps()
-                    )}
-                    className="text-left text-muted-foreground border-r border-border"
-                  >
-                    <div
-                      {...(column as any).getResizerProps({
-                        onClick: ignoreBackdropEvent,
-                      })}
-                      className={classNames(
-                        "w-px h-full inline-block transform translate-x-px hover:bg-accent pl-1 absolute top-0 -right-px"
+                    className: "border-b border-border",
+                  })}
+                  ref={headerRef}
+                >
+                  {headerGroup.headers.map((column) => (
+                    // eslint-disable-next-line react/jsx-key
+                    <th
+                      {...column.getHeaderProps(
+                        (column as any).getSortByToggleProps()
                       )}
-                    />
-                    {column.render("Header", {
-                      isSorted: (column as any)?.isSorted,
-                      isSortedDesc: (column as any).isSortedDesc,
-                      toggleSortBy: (column as any).toggleSortBy,
-                    })}
-                  </th>
-                ))}
-              </div>
-            ))}
-          </thead>
-          <tbody {...getTableBodyProps()} className="block h-full">
-            <Scrollbars
-              style={{ height: height - 36, width }}
-              autoHide
-              onScroll={handleScroll}
-              onScrollStop={handleScrollStop}
-              hideTracksWhenNotNeeded
-              ref={scrollerRef}
-              renderThumbVertical={(props) => (
-                <div
-                  {...props}
-                  className="!bg-border hover:!bg-muted-foreground/60 rounded-full"
-                />
-              )}
-              renderThumbHorizontal={(props) => (
-                <div
-                  {...props}
-                  className="!bg-border hover:!bg-muted-foreground/60 rounded-full"
-                />
-              )}
-            >
-              <FixedSizeList
-                height={height - 34}
-                itemCount={rows.length}
-                itemSize={36}
-                width={width}
-                itemData={rows}
-                itemKey={(id, data) => data[id].original.id}
-                ref={listRef}
-                style={{ overflow: false }}
+                      className="text-left text-muted-foreground border-r border-border flex items-center"
+                    >
+                      <div
+                        {...(column as any).getResizerProps({
+                          onClick: ignoreBackdropEvent,
+                        })}
+                        className={classNames(
+                          "w-px h-full inline-block transform translate-x-px hover:bg-accent pl-1 absolute top-0 -right-px"
+                        )}
+                      />
+                      {column.render("Header", {
+                        isSorted: (column as any)?.isSorted,
+                        isSortedDesc: (column as any).isSortedDesc,
+                        toggleSortBy: (column as any).toggleSortBy,
+                      })}
+                    </th>
+                  ))}
+                </div>
+              ))}
+            </thead>
+            <tbody {...getTableBodyProps()} className="block">
+              <Scrollbars
+                style={{ height: height - HEADER_HEIGHT, width }}
+                autoHide
+                onScroll={handleScroll}
+                onScrollStop={handleScrollStop}
+                hideTracksWhenNotNeeded
+                ref={scrollerRef}
+                renderThumbVertical={(props) => (
+                  <div
+                    {...props}
+                    className="!bg-border hover:!bg-muted-foreground/60 rounded-full"
+                  />
+                )}
+                renderThumbHorizontal={(props) => (
+                  <div
+                    {...props}
+                    className="!bg-border hover:!bg-muted-foreground/60 rounded-full"
+                  />
+                )}
               >
-                {RenderRow}
-              </FixedSizeList>
-            </Scrollbars>
-          </tbody>
-        </table>
-      )}
+                <FixedSizeList
+                  height={height - HEADER_HEIGHT}
+                  itemCount={rows.length}
+                  itemSize={36}
+                  width={width}
+                  itemData={{ rows, selectedId }}
+                  itemKey={(id, data) => data.rows[id].original.id}
+                  ref={listRef}
+                  style={{ overflow: false }}
+                >
+                  {RenderRow}
+                </FixedSizeList>
+              </Scrollbars>
+            </tbody>
+          </table>
+        );
+      }}
     </AutoSizer>
   );
 }
@@ -691,7 +706,7 @@ function DataTable() {
   );
 
   return (
-    <div className="w-full h-full mt-2 border-l border-r border-border bg-background">
+    <div className="w-full h-full border-l border-r border-border bg-background">
       <TableWrapper
         columns={columnViewer}
         data={data}
