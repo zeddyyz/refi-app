@@ -146,7 +146,7 @@ const Property = () => {
           )}
         </div>
       </div>
-      <div className="flex flex-row items-center justify-between mt-3 px-3">
+      {/* <div className="flex flex-row items-center justify-between mt-3 px-3">
         {editorType === "basic" ? (
           <ShadcnInput
             placeholder="Search for property or value..."
@@ -181,8 +181,8 @@ const Property = () => {
             </TooltipContent>
           </Tooltip>
         )}
-      </div>
-      <div className="h-full max-h-full mt-2 px-3 pb-3 overflow-auto">
+      </div> */}
+      <div className="flex-1 min-h-0 mt-2 px-3 pb-2 overflow-auto">
         {editorType === "basic" && (
           <PropertyTable searchInput={searchInput} doc={doc} />
         )}

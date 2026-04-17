@@ -39,6 +39,10 @@ const monacoOption = {
   },
   wordWrap: "bounded",
   theme: "monacoProperty-light",
+  padding: {
+    top: 0,
+    bottom: 0,
+  },
   "semanticHighlighting.enabled": true,
 };
 
@@ -144,17 +148,18 @@ const MonacoProperty = ({ doc }: IMonacoPropertyProps) => {
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      <Editor
-        defaultLanguage="json"
-        value={defaultValue}
-        height="100%"
-        theme={appTheme ? "monacoProperty-light" : "monacoProperty-dark"}
-        wrapperClassName="border border-border pt-2 pb-2"
-        onChange={setDefaultValue}
-        onValidate={handleEditorValidation}
-        options={monacoOption as any}
-        line={1}
-      />
+      <div className="flex-1 min-h-0 border border-border">
+        <Editor
+          defaultLanguage="json"
+          value={defaultValue}
+          height="100%"
+          theme={appTheme ? "monacoProperty-light" : "monacoProperty-dark"}
+          onChange={setDefaultValue}
+          onValidate={handleEditorValidation}
+          options={monacoOption as any}
+          line={1}
+        />
+      </div>
       <MonacoPropertyError path={doc.ref.path} />
     </div>
   );
