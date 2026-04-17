@@ -36,13 +36,9 @@ jobs:
           retention-days: 1
 
   release:
-    name: Package ${{ matrix.os }}
+    name: Package macOS (arm64)
     needs: build-vite
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [macos-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: macos-latest
     env:
       # macOS signing (set these repo secrets once you have an Apple Developer cert)
       CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
@@ -50,9 +46,6 @@ jobs:
       APPLEID: ${{ secrets.APPLEID }}
       APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
       APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-      # Windows signing
-      WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
-      WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

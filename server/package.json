@@ -74,7 +74,6 @@
       "target": {
         "target": "default",
         "arch": [
-          "x64",
           "arm64"
         ]
       }
@@ -87,11 +86,18 @@
       "icon": "./assets/icon.png"
     },
     "files": [
-      "**/*",
       "server/**/*",
       "build/**/*",
+      "assets/**/*",
+      "entitlements.plist",
+      "package.json",
+      "!**/*.map",
+      "!**/*.ts",
+      "!**/.DS_Store",
       "!out/**",
-      "!key/**"
+      "!key/**",
+      "!dist/**",
+      "!src/**"
     ],
     "publish": [
       {
