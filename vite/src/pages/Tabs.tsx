@@ -62,12 +62,15 @@ const TabsPage = () => {
   // const isMacOS = false;
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen bg-background text-foreground">
       <div
-        className={classNames("flex flex-row justify-between h-9", {
-          ["mr-30"]: !isMacOS,
-          ["ml-20"]: isMacOS,
-        })}
+        className={classNames(
+          "flex flex-row justify-between h-9 bg-background py-1",
+          {
+            ["mr-30"]: !isMacOS,
+            ["ml-20"]: isMacOS,
+          }
+        )}
         id="drag-title"
         onDoubleClick={handleToggleMaximumWindow}
       >
@@ -80,7 +83,7 @@ const TabsPage = () => {
                 key={tab}
                 onClick={() => handleSelectTab(tab)}
                 className={classNames(
-                  "group relative flex items-center gap-2 py-2 pl-4 pr-8 text-sm border-r border-border transition-colors cursor-pointer",
+                  "group relative flex items-center gap-2 py-2 pl-4 pr-8 text-sm has-border transition-colors cursor-pointer rounded-md",
                   {
                     "bg-card text-foreground": isActive,
                     "text-muted-foreground hover:bg-accent hover:text-foreground": !isActive,
@@ -101,12 +104,12 @@ const TabsPage = () => {
           <button
             type="button"
             onClick={() => handleSelectTab("add")}
-            className="flex items-center justify-center px-3 py-2 text-muted-foreground hover:bg-accent hover:text-foreground border-r border-border"
+            className="flex items-center justify-center px-3 py-2 text-muted-foreground hover:bg-accent hover:text-foreground border-r border-border rounded-md"
           >
             <Plus className="w-4 h-4" />
           </button>
         </div>
-        <section className="draggable-containers p-3 xl:w-auto flex-1  md:w-auto sm:w-auto"></section>
+        <section className="draggable-containers p-3 xl:w-auto flex-1 md:w-auto sm:w-auto bg-background"></section>
         {!isMacOS && (
           <div className="flex flex-row items-stretch justify-center">
             <div
