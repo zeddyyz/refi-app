@@ -41,7 +41,7 @@ const DateTimePicker = ({
       className="h-full"
       inputProps={{
         className:
-          "w-full h-full outline-none ring-inset focus:bg-accent p-1.5 border-none focus:ring-1 text-sm text-foreground bg-transparent focus:ring-ring",
+          "w-full h-full outline-none ring-inset focus:bg-accent p-1.5 border-0 focus:ring-0 text-sm text-foreground bg-transparent",
       }}
     />
   );

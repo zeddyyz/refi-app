@@ -6,7 +6,7 @@ import {
 import FieldFinderInput from "@/components/FieldFinderInput";
 import SelectComboBox from "@/components/SelectComboBox";
 import { isArrayOp, isNumeric } from "@/utils/common";
-import { convertFSValue } from "@/utils/fieldConverter";
+import { getDefaultValueByType } from "@/utils/fieldConverter";
 import { operatorOptions } from "@/utils/searcher";
 import { getFireStoreType } from "@/utils/simplifr";
 import { Button } from "@/components/ui/button";
@@ -88,6 +88,16 @@ const FilterItem = ({ id }: { id: string }) => {
     );
   };
 
+  const handleSetValue = (value) => {
+    setFilter(
+      immer((curFilter) => {
+        if (curFilter) {
+          curFilter.operator.values = value;
+        }
+      })
+    );
+  };
+
   useLayoutEffect(() => {
     // Auto focus if this filter is new
     if (!filter?.field) {
@@ -105,20 +115,16 @@ const FilterItem = ({ id }: { id: string }) => {
       hint: fieldType,
       onClick: () => {
         if (fieldType === "true") {
-          handleChangeValue(true);
+          handleSetValue(true);
           return;
         }
 
         if (fieldType === "false") {
-          handleChangeValue(false);
+          handleSetValue(false);
           return;
         }
 
-        const newValue = convertFSValue(
-          filter.operator.values,
-          fieldType as RefiFS.IFieldType
-        );
-        handleChangeValue(newValue);
+        handleSetValue(getDefaultValueByType(fieldType as RefiFS.IFieldType));
       },
     })
   );
@@ -136,26 +142,31 @@ const FilterItem = ({ id }: { id: string }) => {
         handleChangeValue(newValueArray);
       };
 
+      const handleSetArrayItemValue = (value, index: number) => {
+        const newValueArray = [...(filter.operator.values as any[])];
+        newValueArray[index] = value;
+        handleChangeValue(newValueArray);
+      };
+
       const menuOptions = (value, index) =>
         ["string", "number", "true", "false", "timestamp"].map((fieldType) => ({
           title: fieldType,
           hint: fieldType,
           onClick: () => {
             if (fieldType === "true") {
-              handleChangeArrayItemValue(true, index);
+              handleSetArrayItemValue(true, index);
               return;
             }
 
             if (fieldType === "false") {
-              handleChangeArrayItemValue(false, index);
+              handleSetArrayItemValue(false, index);
               return;
             }
 
-            const newValue = convertFSValue(
-              value,
-              fieldType as RefiFS.IFieldType
+            handleSetArrayItemValue(
+              getDefaultValueByType(fieldType as RefiFS.IFieldType),
+              index
             );
-            handleChangeArrayItemValue(newValue, index);
           },
         }));
 
@@ -270,19 +281,22 @@ const FilterItem = ({ id }: { id: string }) => {
 
     return (
       <div className="relative">
-        <div className="absolute z-20 top-1 left-1">
-          <DropdownMenu menu={menuOptions} containerClassName="w-24">
+        <div className="absolute z-20 top-2 left-0 ">
+          <DropdownMenu
+            menu={menuOptions}
+            containerClassName="w-24 outline-none focus:outline-none focus-visible:outline-none focus:ring-0"
+          >
             <Button
               variant="ghost"
               size="sm"
-              className="h-7 px-2 text-destructive font-mono text-xs"
+              className="h-7 px-2 text-destructive font-mono text-xs outline-none focus:outline-none focus-visible:outline-none focus:ring-0"
             >
               {inputType}
             </Button>
           </DropdownMenu>
         </div>
         {inputType === "timestamp" ? (
-          <div className="h-8 pl-24 border border-border">
+          <div className="h-7 pl-24 rounded-md bg-card">
             <DateTimePicker
               value={filter.operator.values as firebase.firestore.Timestamp}
               onChange={(newValue) => handleChangeValue(newValue)}
@@ -291,7 +305,8 @@ const FilterItem = ({ id }: { id: string }) => {
         ) : (
           <Input
             className={classNames("pl-24 h-7 text-sm", {
-              ["text-muted-foreground"]: typeof filter.operator.values === "boolean",
+              ["text-muted-foreground"]:
+                typeof filter.operator.values === "boolean",
             })}
             value={String(filter?.operator.values)}
             onChange={(e) => handleChangeValue(e.target.value)}

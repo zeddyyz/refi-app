@@ -145,7 +145,7 @@ export const fieldConverter: Record<
   },
 };
 
-function getDefaultValueByType(type: RefiFS.IFieldType) {
+export function getDefaultValueByType(type: RefiFS.IFieldType) {
   switch (type) {
     case "string":
       return "";

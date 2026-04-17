@@ -64,7 +64,7 @@ const NavBar = () => {
               size="sm"
               onClick={() => setShowChangeModal(true)}
               disabled={!isCommittable}
-              className="h-7 px-3"
+              className="h-7 px-3 bg-secondary"
             >
               Preview changes
             </ShadcnButton>

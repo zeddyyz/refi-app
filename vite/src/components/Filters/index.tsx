@@ -149,15 +149,15 @@ const Filters = () => {
       ))}
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <Button size="sm" onClick={handleAddFilter} className="px-3 h-7 bg-secondary">
+          <Button size="sm" onClick={handleAddFilter} className="px-3 h-7 bg-secondary outline-none focus:outline-none focus-visible:outline-none focus:ring-0">
             Add Filters
           </Button>
           <Popover open={isShowPropertyList} onOpenChange={setShowPropertyList}>
             <PopoverTrigger asChild>
               <Button
                 size="sm"
-                className={classNames("px-3 h-7 bg-secondary", {
-                  "bg-secondary": isShowPropertyList,
+                className={classNames("px-3 h-7 bg-secondary outline-none focus:outline-none focus-visible:outline-none focus:ring-0", {
+                  "bg-secondary outline-none focus:outline-none focus-visible:outline-none focus:ring-0": isShowPropertyList,
                 })}
               >
                 Properties
@@ -165,7 +165,7 @@ const Filters = () => {
             </PopoverTrigger>
             <PopoverContent
               align="start"
-              className="p-2 w-64"
+              className="p-2 w-64 outline-none focus:outline-none focus-visible:outline-none focus:ring-0"
             >
               <PropertyList />
             </PopoverContent>
@@ -200,7 +200,7 @@ const Filters = () => {
             <Button
               size="sm"
               onClick={() => actionNewDocument(collectionPath)}
-              className="px-3 h-7 bg-secondary rounded-md"
+              className="px-3 h-7 bg-secondary rounded-md outline-none focus:outline-none focus-visible:outline-none focus:ring-0"
             >
               New document
             </Button>
@@ -225,7 +225,7 @@ const Filters = () => {
               <Button
                 size="sm"
                 onClick={() => actionSubmitQuery(true)}
-                className="px-3 h-7 rounded-r-none"
+                className="px-3 h-7 rounded-r-none outline-none focus:outline-none focus-visible:outline-none focus:ring-0"
               >
                 Query
               </Button>
@@ -234,9 +234,9 @@ const Filters = () => {
               menu={queryMenu}
               placement="bottom-end"
               className="ml-px"
-              containerClassName="w-60 bg-popover"
+              containerClassName="w-60 bg-popover outline-none focus:outline-none focus-visible:outline-none focus:ring-0"
             >
-              <Button size="sm" className="h-7 px-1 rounded-l-none">
+              <Button size="sm" className="h-7 px-1 rounded-l-none outline-none focus:outline-none focus-visible:outline-none focus:ring-0">
                 <svg
                   className="w-4"
                   xmlns="http://www.w3.org/2000/svg"

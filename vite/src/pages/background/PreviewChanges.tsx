@@ -89,7 +89,7 @@ const PreviewChanges = () => {
       open={true}
       onOpenChange={(open) => !open && setShowChangeModal(false)}
     >
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col bg-background has-outline rounded">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col bg-background rounded-lg outline-none focus:outline-none focus-visible:outline-none focus:ring-0">
         <DialogHeader>
           <DialogTitle>Preview Changes</DialogTitle>
         </DialogHeader>
@@ -142,7 +142,7 @@ const PreviewChanges = () => {
 
               return (
                 <div key={collection}>
-                  <table className="w-full table-fixed has-border rounded-lg">
+                  <table className="w-full table-fixed ml-1 mb-4">
                     <thead>
                       <tr>
                         <th className="w-full"></th>
@@ -213,7 +213,7 @@ const PreviewChanges = () => {
                           <td>
                             {/* // TODO: Tooltip to let user know this is reverse button */}
                             <button
-                              className="p-1 opacity-0 group-hover:opacity-100"
+                              className="p-1 opacity-0 group-hover:opacity-100 outline-none focus:outline-none focus-visible:outline-none focus:ring-0"
                               onClick={() => handleReverseDoc(doc)}
                             >
                               <svg
@@ -241,7 +241,7 @@ const PreviewChanges = () => {
             })}
         </div>
         <DialogFooter>
-          <Button variant="outline" size="sm" onClick={handleOnReverseAll}>
+          <Button variant="outline" size="sm" onClick={handleOnReverseAll} className="outline-none focus:outline-none focus-visible:outline-none focus:ring-0">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 mr-1"
@@ -258,7 +258,7 @@ const PreviewChanges = () => {
             </svg>
             Revert all
           </Button>
-          <Button size="sm" onClick={handleOnCommit}>
+          <Button size="sm" onClick={handleOnCommit} className="outline-none focus:outline-none focus-visible:outline-none focus:ring-0">
             Commit
           </Button>
         </DialogFooter>
