@@ -176,10 +176,10 @@ const Filters = () => {
             <div className="text-sm">
               <strong className="text-foreground">{totalDocs}</strong> document(s)
             </div>
-            <div className="flex items-center gap-1">
+            {/* <div className="flex items-center gap-1">
               <PreviousButton />
               <NextButton />
-            </div>
+            </div> */}
           </div>
           <Tooltip
             placement="bottom"
@@ -200,7 +200,7 @@ const Filters = () => {
             <Button
               size="sm"
               onClick={() => actionNewDocument(collectionPath)}
-              className="px-3 h-7"
+              className="px-3 h-7 bg-secondary rounded-md"
             >
               New document
             </Button>

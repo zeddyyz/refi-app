@@ -377,7 +377,10 @@ function TreeView({ allDocs, deletedDocs, pathAvailable }: ITreeViewProps) {
     return currentTree;
   }, [allPaths, addingNewCollection]);
 
-  const handleOnFocus = () => {
+  const handleOnFocus = (e: React.FocusEvent<HTMLDivElement>) => {
+    if (e.target !== e.currentTarget) {
+      return;
+    }
     treeWrapperRef?.current?.querySelector("input")?.focus();
   };
 
@@ -483,25 +486,19 @@ function TreeView({ allDocs, deletedDocs, pathAvailable }: ITreeViewProps) {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="px-3 py-2 border-b border-border">
-        <Input
-          placeholder="Search for item..."
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          className="bg-background border-border h-7 text-sm"
-        />
-      </div>
       <div
         className="flex flex-col h-full"
         tabIndex={1}
         ref={treeWrapperRef}
         onFocus={handleOnFocus}
       >
-        <div className="flex h-8 flex-row items-center justify-between pl-4 bg-background border-b border-border">
-          <span className="text-sm font-medium text-foreground truncate">{getProjectId()}</span>
+        <div className="flex h-[34px] flex-row items-center justify-between p-3 bg-background border-b border-border">
+          <span className="text-sm font-medium text-foreground truncate">
+            {getProjectId()}
+          </span>
 
           <button
-            className="h-full px-2 hover:bg-accent text-muted-foreground hover:text-foreground"
+            className="h-full px-1 hover:bg-accent text-muted-foreground hover:text-foreground rounded-md"
             role="button"
             onClick={() => handleAddCollection("")}
           >
@@ -540,6 +537,14 @@ function TreeView({ allDocs, deletedDocs, pathAvailable }: ITreeViewProps) {
               />
             )}
           </AutoSizer>
+        </div>
+        <div className="px-3 py-2 border-t border-border">
+          <Input
+            placeholder="Search for item..."
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            className="bg-background border-border h-7 text-sm"
+          />
         </div>
       </div>
     </div>
