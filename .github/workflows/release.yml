@@ -39,13 +39,6 @@ jobs:
     name: Package macOS (arm64)
     needs: build-vite
     runs-on: macos-latest
-    env:
-      # macOS signing (set these repo secrets once you have an Apple Developer cert)
-      CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
-      CSC_LINK: ${{ secrets.CSC_LINK }}
-      APPLEID: ${{ secrets.APPLEID }}
-      APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
-      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -61,4 +54,9 @@ jobs:
           name: vite-dist
           path: server/build
       - name: Build & publish installer
-        run: cd server && npx electron-builder --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          # Skip code signing when no cert is configured; avoids electron-builder's
+          # empty-CSC_LINK bug where it resolves "" to cwd and errors with "not a file".
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+        run: cd server && npx electron-builder --mac --arm64 --publish always
