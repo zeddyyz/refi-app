@@ -270,7 +270,7 @@ const NewCollectionInput = ({ path, onChange }: INewCollectionInputProps) => {
       ref={inputRef}
       tabIndex={2}
       onFocus={handleFocus}
-      className="w-auto p-0.5 min-h border border-border bg-card text-foreground h-6 focus:border-primary text-sm outline-none rounded"
+      className="w-auto p-0.5 min-h border border-border bg-background text-foreground h-6 focus:border-primary text-sm outline-none rounded"
     />
   );
 };
@@ -488,7 +488,7 @@ function TreeView({ allDocs, deletedDocs, pathAvailable }: ITreeViewProps) {
           placeholder="Search for item..."
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          className="bg-card border-border h-7 text-sm"
+          className="bg-background border-border h-7 text-sm"
         />
       </div>
       <div
@@ -497,7 +497,7 @@ function TreeView({ allDocs, deletedDocs, pathAvailable }: ITreeViewProps) {
         ref={treeWrapperRef}
         onFocus={handleOnFocus}
       >
-        <div className="flex h-8 flex-row items-center justify-between pl-2 bg-card border-b border-border">
+        <div className="flex h-8 flex-row items-center justify-between pl-4 bg-background border-b border-border">
           <span className="text-sm font-medium text-foreground truncate">{getProjectId()}</span>
 
           <button
@@ -520,7 +520,7 @@ function TreeView({ allDocs, deletedDocs, pathAvailable }: ITreeViewProps) {
             </svg>
           </button>
         </div>
-        <div className="w-full h-full bg-card min-w-0 overflow-x-auto">
+        <div className="w-full h-full bg-background min-w-0 overflow-x-auto">
           <AutoSizer disableWidth>
             {({ height }) => (
               <Tree

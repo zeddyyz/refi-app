@@ -163,8 +163,18 @@
   background: rgba(0, 0, 0, 0.1);
 }
 
-.rc-tree-treenode-selected {
-  @apply bg-accent text-accent-foreground !important;
+.rc-tree-treenode {
+  @apply mr-2 rounded-lg pl-1 py-1 !important;
+}
+
+.rc-tree-treenode-selected,
+.rc-tree-treenode-selected .rc-tree-node-content-wrapper,
+.rc-tree-treenode-selected .rc-tree-node-content-wrapper-normal {
+  @apply bg-accent text-accent-foreground rounded-lg !important;
+}
+
+.rc-tree-node-content-wrapper:hover {
+  @apply bg-accent/50 rounded-lg;
 }
 
 .rc-tree-icon__open {
@@ -189,6 +199,7 @@
 .rc-tree-title {
   display: inline-block;
 }
+
 .rc-tree-indent {
   display: inline-block;
   vertical-align: bottom;
@@ -201,6 +212,7 @@
 
 .rc-tree-list-holder {
   overflow-x: auto;
+  @apply pl-2 pr-1;
 }
 
 .rc-tree-list-holder > div {

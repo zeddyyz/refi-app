@@ -691,7 +691,7 @@ function DataTable() {
   );
 
   return (
-    <div className="w-full h-full mt-2 border-l border-r border-border">
+    <div className="w-full h-full mt-2 border-l border-r border-border bg-background">
       <TableWrapper
         columns={columnViewer}
         data={data}

@@ -59,7 +59,7 @@ function MainLayout(): ReactElement {
             className="flex-1 min-h-0"
           >
             <Panel id="sidebar" defaultSize={18} minSize={12} order={1}>
-              <div className="h-full w-full overflow-hidden bg-card">
+              <div className="h-full w-full overflow-hidden bg-background">
                 <TreeView />
               </div>
             </Panel>

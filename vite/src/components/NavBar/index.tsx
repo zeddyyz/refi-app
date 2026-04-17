@@ -56,7 +56,7 @@ const NavBar = () => {
   }, [isCommittable]);
 
   return (
-    <div className="flex flex-row items-center gap-2 h-12 px-3 w-full">
+    <div className="flex flex-row items-center gap-2 h-12 px-3 w-full bg-background">
       <div className="flex flex-row items-center gap-2">
         <Tooltip delayDuration={100}>
           <TooltipTrigger asChild>
