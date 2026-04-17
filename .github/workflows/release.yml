@@ -17,17 +17,15 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "16"
+          node-version: "20"
           cache: "yarn"
-          cache-dependency-path: |
-            vite/yarn.lock
-            tree/yarn.lock
+          cache-dependency-path: vite/yarn.lock
       - name: Install tree lib
-        run: cd tree && yarn --frozen-lockfile
+        run: cd tree && yarn install --ignore-engines
       - name: Build tree lib
         run: cd tree && yarn compile
       - name: Install Vite deps
-        run: cd vite && yarn --frozen-lockfile
+        run: cd vite && yarn --frozen-lockfile --ignore-engines
       - name: Build Vite
         run: cd vite && yarn build
       - name: Upload vite artifact
@@ -59,9 +57,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "16"
+          node-version: "20"
       - name: Install server deps
-        run: cd server && yarn --frozen-lockfile
+        run: cd server && yarn --frozen-lockfile --ignore-engines
       - name: Compile server TS
         run: cd server && yarn build-ts
       - name: Download Vite artifact into server/build
