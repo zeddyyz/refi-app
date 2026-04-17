@@ -264,7 +264,7 @@ export const IDReadOnlyField = ({
     <div className="relative w-full h-full px-px font-mono group">
       <input
         className={classNames(
-          "focus:ring-1 focus:ring-ring w-full h-full bg-transparent outline-none ring-inset focus:bg-accent p-1.5 text-foreground font-mono text-sm",
+          "focus:ring-1 focus:ring-ring w-full h-full bg-transparent outline-none border-0 ring-inset focus:bg-accent p-1.5 text-foreground font-mono text-sm",
           {
             ["bg-status-new"]: isNew,
           }
