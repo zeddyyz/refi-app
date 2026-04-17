@@ -150,7 +150,7 @@ const PropertyList = () => {
         onSubmit={handleSubmit(handleAddProperty)}
         className="p-0.5 flex flex-row space-x-2"
       >
-        <div className="w-full">
+        <div className="w-full has-outline">
           <Controller
             control={control}
             name="property"
@@ -166,7 +166,7 @@ const PropertyList = () => {
             )}
           />
         </div>
-        <Button onClick={handleResetFieldList} variant="outline" size="sm" className="h-7 px-3">
+        <Button onClick={handleResetFieldList} variant="outline" size="sm" className="h-7 px-3 bg-secondary">
           Reset
         </Button>
       </form>

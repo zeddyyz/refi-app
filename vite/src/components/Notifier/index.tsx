@@ -24,9 +24,17 @@ const Notifier = () => {
   });
 
   const notificationList = notifications.map((notif) => (
-    <Notification key={notif.id} type={notif.type} className="mt-4 w-96">
+    <Notification key={notif.id} type={notif.type}>
       <Title className="capitalize">{notif.type}</Title>
-      <Linkify>{notif.message}</Linkify>
+      <Linkify
+        componentDecorator={(href, text, key) => (
+          <a key={key} href={href} target="_blank" rel="noopener noreferrer">
+            {text}
+          </a>
+        )}
+      >
+        {notif.message}
+      </Linkify>
       <Close
         aria-label="Close Alert"
         onClick={() => handleCloseNotification(notif.id)}

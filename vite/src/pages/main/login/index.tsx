@@ -110,13 +110,13 @@ const LoginPage: React.FC = () => {
         <div
           key={cert.projectId}
           onDoubleClick={() => handleOpenConnection(cert.projectId)}
-          className="flex flex-row items-center justify-between p-4 cursor-pointer bg-muted hover:bg-accent rounded-xl"
+          className="flex flex-row items-center justify-between p-4 cursor-pointer bg-muted hover:bg-accent rounded-xl border-none"
         >
           <Title>{cert.projectId}</Title>
           <div className="flex flex-row items-center space-x-2">
             <button
               type="button"
-              className="w-8 h-8 p-1 text-destructive hover:bg-accent rounded"
+              className="w-8 h-8 p-1 text-destructive hover:bg-accent rounded border-none"
               onClick={() => setConfirm(cert.projectId)}
             >
               <svg

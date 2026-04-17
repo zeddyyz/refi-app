@@ -132,7 +132,7 @@ const PropertyTable = ({ searchInput, doc }: IPropertyTableProps) => {
               ? row.depth + 1
               : (row.depth as number);
             return (
-              <tr key={row.original.field} className="hover:bg-accent/40">
+              <tr key={row.original.field} className="hover:bg-accent/40 active:bg-accent/40">
                 {row.cells.map((cell) => {
                   return (
                     <td

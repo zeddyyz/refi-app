@@ -89,9 +89,9 @@ const PreviewChanges = () => {
       open={true}
       onOpenChange={(open) => !open && setShowChangeModal(false)}
     >
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col bg-background has-outline rounded">
         <DialogHeader>
-          <DialogTitle>Preview changes</DialogTitle>
+          <DialogTitle>Preview Changes</DialogTitle>
         </DialogHeader>
         <div className="flex-1 overflow-auto px-2 -mx-2">
           <h3 className="text-lg font-medium">Collections</h3>
@@ -142,7 +142,7 @@ const PreviewChanges = () => {
 
               return (
                 <div key={collection}>
-                  <table className="w-full table-fixed">
+                  <table className="w-full table-fixed has-border rounded-lg">
                     <thead>
                       <tr>
                         <th className="w-full"></th>

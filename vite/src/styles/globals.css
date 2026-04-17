@@ -50,7 +50,7 @@
     --destructive-foreground: 210 40% 98%;
     --border: 240 2% 17%;
     --input: 240 2% 17%;
-    --ring: 224.3 76.3% 94.1%;
+    --ring: 240 1% 20%;
     --status-changed: 217 91% 60% / 0.22;
     --status-new: 158 74% 45% / 0.26;
     --status-highlight: 45 96% 60% / 0.30;
@@ -141,4 +141,222 @@
     user-select: none;
     -webkit-app-region: drag;
   }
+}
+
+/* Global flat-look override: remove all borders, outlines, rings, and shadows */
+*,
+*::before,
+*::after {
+  /* border: 0 !important;
+  border-color: transparent !important;
+  outline: 0 !important;
+  outline-color: transparent !important;
+  box-shadow: none !important;
+  --tw-ring-shadow: 0 0 transparent !important;
+  --tw-ring-offset-shadow: 0 0 transparent !important;
+  --tw-shadow: 0 0 transparent !important;
+  --tw-shadow-colored: 0 0 transparent !important; */
+}
+
+/* Escape hatches: opt back into borders/outlines/shadows on specific elements.
+   Add one of these classes (or nest inside a `.allow-borders` ancestor). */
+.has-border,
+.has-border::before,
+.has-border::after {
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+.has-outline {
+  outline: 1px solid hsl(var(--ring)) !important;
+}
+
+.has-shadow {
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1) !important;
+}
+
+/* Inside `.allow-borders`, nothing is stripped — use for subtrees where you
+   want the original component styling back (e.g. a complex form). */
+.allow-borders,
+.allow-borders *,
+.allow-borders *::before,
+.allow-borders *::after {
+  border: revert !important;
+  border-color: revert !important;
+  outline: revert !important;
+  outline-color: revert !important;
+  box-shadow: revert !important;
+  --tw-ring-shadow: revert !important;
+  --tw-ring-offset-shadow: revert !important;
+  --tw-shadow: revert !important;
+  --tw-shadow-colored: revert !important;
+}
+
+
+.rounded-lg {
+  border-radius: 1rem !important;
+}
+
+/* =========================================================================
+   Zendesk Garden <Notification /> — theme-consistent, subtle look.
+   Garden renders styled-components with hashed class names, so we target the
+   stable `data-garden-id` attributes it ships with. Used by:
+   - src/components/Notifier/index.tsx (toast stack in #notifications portal)
+   - src/pages/main/login/index.tsx    (inline error/info on login)
+
+   NOTE: the #notifications portal lives in <body>, OUTSIDE `#root-body`, so
+   Tailwind utilities don't apply there (tailwind.config.js uses
+   `important: "#root-body"`). All sizing/position is done in plain CSS here.
+   ========================================================================= */
+
+/* Portal container — constrains the toast stack to the top-right corner.
+   Tailwind utilities don't apply here (outside #root-body), so positioning
+   is set in plain CSS to match the original top-right stack. */
+#notifications {
+  position: absolute;
+  top: 3rem;
+  right: 1rem;
+  width: 24rem;
+  max-width: calc(100vw - 2rem);
+  z-index: 500;
+  pointer-events: none;
+}
+#notifications > * {
+  pointer-events: auto;
+  margin-top: 0.75rem;
+}
+#notifications > *:first-child {
+  margin-top: 1rem;
+  border: 1px solid hsl(var(--destructive)) !important;
+  border-radius: 1rem !important;
+}
+
+/* Container — card surface with subtle border, themed in light & dark.
+   Garden places a severity icon `position: absolute; left: 32px` directly on
+   the card, so we reserve ~40px of left padding to prevent overlap with the
+   Title text. Right padding leaves room for the 32px close button. */
+[data-garden-id="notifications.notification"],
+[data-garden-id="notifications.alert"] {
+  background-color: hsl(var(--card)) !important;
+  color: hsl(var(--card-foreground)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: 0 10px 30px -12px rgb(0 0 0 / 0.45) !important;
+  padding: 0.875rem 2.75rem 0.875rem 2.5rem !important;
+  line-height: 1.45 !important;
+  font-size: 0.8125rem !important;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  width: auto !important;
+}
+
+/* Nudge Garden's severity icon to vertically align with the title text and
+   sit inside the new left padding. */
+[data-garden-id="notifications.notification"] > svg,
+[data-garden-id="notifications.alert"] > svg {
+  left: 1rem !important;
+  top: 0.9rem !important;
+  margin-top: 0 !important;
+  width: 14px !important;
+  height: 14px !important;
+}
+/* RTL: mirror side. */
+[data-garden-id="notifications.notification"][dir="rtl"] > svg,
+[data-garden-id="notifications.alert"][dir="rtl"] > svg {
+  left: auto !important;
+  right: 1rem !important;
+}
+
+/* Title — colored by notification type using theme tokens. */
+[data-garden-id="notifications.notification"] [data-garden-id="notifications.title"],
+[data-garden-id="notifications.alert"] [data-garden-id="notifications.title"] {
+  color: hsl(var(--foreground)) !important;
+  font-weight: 600 !important;
+  font-size: 0.8125rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+[data-garden-id="notifications.notification"][type="error"] [data-garden-id="notifications.title"] {
+  color: hsl(var(--destructive)) !important;
+}
+[data-garden-id="notifications.notification"][type="warning"] [data-garden-id="notifications.title"] {
+  color: hsl(45 96% 50%) !important;
+}
+.dark [data-garden-id="notifications.notification"][type="warning"] [data-garden-id="notifications.title"] {
+  color: hsl(45 96% 60%) !important;
+}
+[data-garden-id="notifications.notification"][type="success"] [data-garden-id="notifications.title"] {
+  color: hsl(158 74% 40%) !important;
+}
+.dark [data-garden-id="notifications.notification"][type="success"] [data-garden-id="notifications.title"] {
+  color: hsl(158 74% 55%) !important;
+}
+[data-garden-id="notifications.notification"][type="info"] [data-garden-id="notifications.title"] {
+  color: hsl(var(--primary)) !important;
+}
+
+/* Subtle left-edge accent stripe instead of a loud filled background. */
+[data-garden-id="notifications.notification"] {
+  position: relative !important;
+}
+[data-garden-id="notifications.notification"]::before {
+  /* content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-top-left-radius: var(--radius);
+  border-bottom-left-radius: var(--radius);
+  background-color: hsl(var(--border)); */
+}
+[data-garden-id="notifications.notification"][type="error"]::before {
+  background-color: hsl(var(--destructive));
+}
+[data-garden-id="notifications.notification"][type="warning"]::before {
+  background-color: hsl(45 96% 55%);
+}
+[data-garden-id="notifications.notification"][type="success"]::before {
+  background-color: hsl(158 74% 45%);
+}
+[data-garden-id="notifications.notification"][type="info"]::before {
+  background-color: hsl(var(--primary));
+}
+
+/* Body paragraph — themed, comfortable contrast. */
+[data-garden-id="notifications.notification"] [data-garden-id="notifications.paragraph"],
+[data-garden-id="notifications.alert"] [data-garden-id="notifications.paragraph"] {
+  color: hsl(var(--card-foreground) / 0.85) !important;
+  margin-top: 0.25rem !important;
+}
+
+/* Links inside notifications (error index URLs, etc.). */
+[data-garden-id="notifications.notification"] a,
+[data-garden-id="notifications.alert"] a {
+  color: hsl(var(--primary)) !important;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+}
+
+/* Close button — muted, hover brightens. Resize to fit our padding so the
+   circular hover highlight stays centered around the X icon. */
+[data-garden-id="notifications.close"] {
+  color: hsl(var(--muted-foreground)) !important;
+  width: 28px !important;
+  height: 28px !important;
+  top: 10px !important;
+  right: 10px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+[data-garden-id="notifications.close"] > svg {
+  width: 12px !important;
+  height: 12px !important;
+}
+[data-garden-id="notifications.close"]:hover {
+  color: hsl(var(--foreground)) !important;
+  background-color: hsl(var(--muted)) !important;
 }
