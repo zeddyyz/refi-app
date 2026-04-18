@@ -108,7 +108,7 @@
         "owner": "zeddyyz",
         "repo": "refi-app",
         "private": false,
-        "releaseType": "draft"
+        "releaseType": "release"
       }
     ]
   }
