@@ -53,10 +53,13 @@ jobs:
         with:
           name: vite-dist
           path: server/build
-      - name: Build & publish installer
+      - name: Build, sign, notarize & publish installer
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          # Skip code signing when no cert is configured; avoids electron-builder's
-          # empty-CSC_LINK bug where it resolves "" to cwd and errors with "not a file".
-          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: cd server && npx electron-builder --mac --arm64 --publish always

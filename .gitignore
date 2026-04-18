@@ -61,3 +61,4 @@ jspm_packages/
 server/build/
 server/dist/
 vite/dist/
+server/package-lock.json
