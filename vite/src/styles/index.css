@@ -1422,6 +1422,10 @@ select {
   width: 24rem;
 }
 
+#root-body .w-120 {
+  width: 30rem;
+}
+
 #root-body .w-auto {
   width: auto;
 }

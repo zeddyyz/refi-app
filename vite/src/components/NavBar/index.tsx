@@ -20,11 +20,13 @@ import {
 import React, { useEffect, useState } from "react";
 import { useRecoilCallback, useSetRecoilState } from "recoil";
 import ShortcutKey from "../ShortcutKey";
+import GetTimestampModal from "./GetTimestampModal";
 
 const NavBar = () => {
   const setShowChangeModal = useSetRecoilState(isShowPreviewChangeModalAtom);
   // const isCommittable = useRecoilValue(isCommittableAtom);
   const [isCommittable, setCommittable] = useState(false);
+  const [showTimestampModal, setShowTimestampModal] = useState(false);
 
   const checkCommittable = useRecoilCallback(({ snapshot }) => async () => {
     const changedDocs = await snapshot.getPromise(changedDocAtom);
@@ -64,7 +66,7 @@ const NavBar = () => {
               size="sm"
               onClick={() => setShowChangeModal(true)}
               disabled={!isCommittable}
-              className="h-7 px-3 bg-secondary"
+              className="h-7 px-3 bg-secondary outline-none focus:outline-none focus-visible:outline-none focus:ring-0"
             >
               Preview changes
             </ShadcnButton>
@@ -82,12 +84,12 @@ const NavBar = () => {
               size="sm"
               disabled={!isCommittable}
               onClick={actionCommitChange}
-              className="h-7 px-3"
+              className="h-7 px-3 outline-none focus:outline-none focus-visible:outline-none focus:ring-0"
             >
               Commit
             </ShadcnButton>
           </TooltipTrigger>
-          <TooltipContent side="bottom" className="max-w-2xl p-2">
+          <TooltipContent side="bottom" className="max-w-2xl p-2 outline-none focus:outline-none focus-visible:outline-none focus:ring-0">
             <ShortcutKey
               size="small"
               hotkey={globalHotKeys.COMMIT_CHANGES.sequences}
@@ -130,6 +132,20 @@ const NavBar = () => {
       <div className="flex-1 min-w-0">
         <PathInput />
       </div>
+      <div className="flex flex-row items-center gap-2 shrink-0">
+        <ShadcnButton
+          size="sm"
+          variant="outline"
+          onClick={() => setShowTimestampModal(true)}
+          className="h-7 px-3 outline-none focus:outline-none focus-visible:outline-none focus:ring-0"
+        >
+          Get Timestamp
+        </ShadcnButton>
+      </div>
+      <GetTimestampModal
+        open={showTimestampModal}
+        onOpenChange={setShowTimestampModal}
+      />
     </div>
   );
 };
