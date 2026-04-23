@@ -139,7 +139,7 @@ const NavBar = () => {
           onClick={() => setShowTimestampModal(true)}
           className="h-7 px-3 outline-none focus:outline-none focus-visible:outline-none focus:ring-0"
         >
-          Get Timestamp
+          Timestamp (UTC)
         </ShadcnButton>
       </div>
       <GetTimestampModal
