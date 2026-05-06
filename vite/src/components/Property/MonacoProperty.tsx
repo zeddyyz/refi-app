@@ -6,6 +6,10 @@ import {
   addFirebaseDocSerializeMetaData,
   removeFirebaseSerializeMetaData,
 } from "@/utils/common";
+import {
+  displayifyTimestamps,
+  restoreTimestamps,
+} from "@/utils/timestampDisplay";
 import Editor, { Monaco, OnValidate, useMonaco } from "@monaco-editor/react";
 import { diff } from "deep-diff";
 import firebase from "firebase/app";
@@ -47,19 +51,27 @@ const monacoOption = {
 };
 
 const serializeData = (doc: ClientDocumentSnapshot) => {
-  return removeFirebaseSerializeMetaData(
-    JSON.stringify(JSON.parse(serializeDocumentSnapshot(doc)))
+  return displayifyTimestamps(
+    removeFirebaseSerializeMetaData(
+      JSON.stringify(JSON.parse(serializeDocumentSnapshot(doc)))
+    )
   );
 };
+
+class TimestampParseError extends Error {}
 
 const deserializeData = (
   originalDoc: ClientDocumentSnapshot,
   data: string
 ): ClientDocumentSnapshot => {
+  const restored = restoreTimestamps(data);
+  if (restored.error) {
+    throw new TimestampParseError(restored.error);
+  }
   return originalDoc.clone(
     deserializeDocumentSnapshot(
       addFirebaseDocSerializeMetaData(
-        data,
+        restored.result,
         originalDoc.id,
         originalDoc.ref.path
       ),
@@ -142,6 +154,10 @@ const MonacoProperty = ({ doc }: IMonacoPropertyProps) => {
         actionUpdateDoc(newDoc);
       }
     } catch (error) {
+      if (error instanceof TimestampParseError) {
+        setError(error.message);
+        return;
+      }
       console.log(error);
     }
   }, 300);
