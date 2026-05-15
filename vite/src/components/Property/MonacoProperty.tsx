@@ -83,9 +83,18 @@ const deserializeData = (
 };
 
 const MonacoProperty = ({ doc }: IMonacoPropertyProps) => {
+  const initialSerialized = serializeData(doc);
   const [defaultValue, setDefaultValue] = useState<string | undefined>(
-    serializeData(doc)
+    initialSerialized
   );
+  // Tracks the last string we rendered into the editor from `doc`. We use it
+  // to short-circuit `commitChange` when Monaco fires `onValidate` for a
+  // value that we put there ourselves (e.g. on mount or after an external
+  // doc sync). Without this, the validate-on-mount pass would re-deserialize
+  // and diff against `doc.data()`, and small lossy round-trips (notably the
+  // truncation from Firestore Timestamp nanoseconds to JS Date milliseconds)
+  // would falsely mark the document as changed.
+  const lastSerializedRef = useRef<string | undefined>(initialSerialized);
   const editorView = useRef<any>();
   const setError = useSetRecoilState(monacoDataErrorAtom(doc.ref.path));
   const appTheme = useRecoilValue(appThemeAtom);
@@ -112,7 +121,9 @@ const MonacoProperty = ({ doc }: IMonacoPropertyProps) => {
     if (
       !document.activeElement?.classList.contains("monaco-mouse-cursor-text")
     ) {
-      setDefaultValue(serializeData(doc));
+      const next = serializeData(doc);
+      lastSerializedRef.current = next;
+      setDefaultValue(next);
     }
   }, [doc]);
 
@@ -131,6 +142,15 @@ const MonacoProperty = ({ doc }: IMonacoPropertyProps) => {
   const commitChange = debounce((docStr?: string) => {
     if (!docStr) {
       setError("Can not parse data from JSON");
+      return;
+    }
+
+    // No-op when the editor's value is byte-identical to whatever we last
+    // rendered from `doc`. Prevents the mount-time / sync-time validation
+    // pass from marking the document dirty via the lossy
+    // Timestamp -> ISO -> Timestamp round-trip.
+    if (docStr === lastSerializedRef.current) {
+      setError("");
       return;
     }
 
